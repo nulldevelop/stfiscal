@@ -1,0 +1,1157 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+// ===============================================
+// 1. CONFIGURAÇÕES E CACHE
+// ===============================================
+
+model Cache {
+  key       String    @id @unique
+  value     String    @db.MediumText
+  updatedAt DateTime
+  expiresAt DateTime?
+}
+
+// ===============================================
+// 2. ENUMS
+// ===============================================
+
+enum ROLES {
+  OWNER
+  ADMIN
+  SUPORT
+  FISCAL_PRINCIPAL
+  FISCAL_SETORIAL
+  GESTOR_CONTRATOS
+  USER
+}
+
+enum SituacaoLicitacao {
+  AGUARDANDO
+  ANDAMENTO
+  CANCELADA
+  CONCLUIDA
+  SUSPENSA
+}
+
+enum TipoLicitacao {
+  CONCORRENCIA
+  TOMADA_DE_PRECO
+  CONVITE
+  PREGAO
+  LEILAO
+  INEXIGIBILIDADE
+  DISPENSA
+  OUTROS
+}
+
+enum OrganizationStatus {
+  ACTIVE
+  DESACTIVE
+  TRIAL
+}
+
+enum SituacaoFiscalTrabalhista {
+  FISCAL
+  TRABALHISTA
+}
+
+enum TipoNotificacaoRef {
+  NOTIFICACAO
+  NOTIFICACAO_ENTREGA
+  NOTIFICACAO_ENTREGA_INCOMPLETA
+  NOTIFICACAO_FISCAL_TRABALHISTA
+  NOTIFICACAO_DESCONFORMIDADE
+}
+
+enum TipoHistoricoNotificacao {
+  COMENTARIO
+  ANEXO
+  ENVIO_EMAIL
+  RETORNO_FORNECEDOR
+  OUTRO
+}
+
+enum STATUS {
+  ATIVO
+  INATIVO
+}
+
+enum LogAction {
+  CREATE
+  UPDATE
+  DELETE
+}
+
+// ===============================================
+// 3. AUTENTICAÇÃO E USUÁRIOS (Better Auth)
+// ===============================================
+
+model User {
+  id                    String                 @id
+  name                  String                 @db.Text
+  email                 String
+  emailVerified         Boolean                @default(false)
+  image                 String?                @db.Text
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @default(now()) @updatedAt
+  sessions              Session[]
+  accounts              Account[]
+  username              String?
+  displayUsername       String?                @db.Text
+  banned                Boolean?               @default(false)
+  banReason             String?                @db.Text
+  banExpires            DateTime?
+  linkedAt              DateTime? // Data em que o usuário foi vinculado à organização
+  fiscalLinkedAt        DateTime? // Data da vinculação automática fiscal/contrato
+  members               Member[]
+  fiscais               FiscalContrato[]
+  notificacaoHistoricos NotificacaoHistorico[]
+
+  @@unique([email])
+  @@unique([username])
+  @@map("user")
+}
+
+model Session {
+  id                   String   @id
+  expiresAt            DateTime
+  token                String
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  ipAddress            String?  @db.Text
+  userAgent            String?  @db.Text
+  userId               String
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  impersonatedBy       String?  @db.Text
+  activeOrganizationId String?  @db.Text
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String    @db.Text
+  providerId            String    @db.Text
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?   @db.Text
+  refreshToken          String?   @db.Text
+  idToken               String?   @db.Text
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?   @db.Text
+  password              String?   @db.Text
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String   @db.Text
+  value      String   @db.Text
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  @@map("verification")
+}
+
+// ===============================================
+// 4. ORGANIZAÇÃO E PERMISSÕES
+// ===============================================
+
+model Organization {
+  id                            String                         @id @default(uuid())
+  name                          String
+  slug                          String                         @unique
+  email                         String
+  telefone                      String
+  cnpj                          String                         @unique
+  logo                          String?
+  cidade                        String?
+  createdAt                     DateTime                       @default(now())
+  status                        OrganizationStatus             @default(ACTIVE)
+  members                       Member[]
+  fiscalContratos               FiscalContrato[]
+  empresas                      Empresas[]
+  contratos                     Contrato[]
+  aditivos                      Aditivo[]
+  empenhos                      Empenho[]
+  licitacoes                    Licitacao[]
+  bensEServicosReports          BensEServicosReport[]
+  transporteReports             TransporteReport[]
+  obrasReports                  ObrasReport[]
+  terceirizacaoReports          TerceirizacaoReport[]
+  fiscalPrincipalReports        FiscalPrincipalReport[]
+  notificacoes                  Notificacoes[]
+  notificacoesEntrega           NotificacaoEntrega[]
+  notificacaoEntregaIncompletas NotificacaoEntregaIncompleta[]
+  notificacoesFiscalTrabalhista NotificacaoFiscalTrabalhista[]
+  notificacoesDesconformidade   NotificacaoDesconformidade[]
+  notificacaoHistoricos         NotificacaoHistorico[]
+  lotacoes                      Lotacoes[]
+  tipoRelatorios                TipoRelatorio[]
+  auditLogs                     AuditLog[]
+  apiSyncLogs                   ApiSyncLog[]
+  memberPermissions             MemberPermission[]
+  modulos                       Modulo[]
+  
+  // API Integrations
+  apiUrlContratos               String?                        @db.Text
+  apiUrlLicitacoes              String?                        @db.Text
+  apiUrlFiscais                 String?                        @db.Text
+  apiUrlAditivos                String?                        @db.Text
+  autoLinkFiscais               Boolean                        @default(false)
+
+  // SMTP / Notificações
+  smtpHost    String?
+  smtpPort    Int?    @default(587)
+  smtpUser    String?
+  smtpPass    String? @db.Text
+  smtpFrom    String?
+  notifyEmail String?
+
+  // Status da última sincronização
+  lastSyncAt      DateTime?
+  lastSyncStatus  String?
+  lastSyncMessage String?        @db.Text
+  systemUpdates   SystemUpdate[]
+  formConfigs     FormConfig[]
+
+  @@map("organization")
+}
+
+model Member {
+  id                       String             @id @default(uuid())
+  organizationId           String
+  userId                   String
+  email                    String             @default("default@example.com")
+  role                     ROLES              @default(FISCAL_SETORIAL)
+  createdAt                DateTime           @default(now())
+  fiscalCpf                String?
+  fiscalMatricula          String?
+  fiscalCargo              String?
+  fiscalContato            String?
+  organization             Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user                     User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permissions              MemberPermission[]
+  fiscalPrincipalContratos ContratoFiscal[]
+  setoriaisContratos       ContratoSetorial[]
+
+  @@unique([userId, organizationId])
+  @@index([organizationId], map: "member_organizationId_fkey")
+  @@map("member")
+}
+
+model MemberPermission {
+  id             String   @id @default(uuid())
+  memberId       String
+  organizationId String
+  moduloId       String
+  canCreate      Boolean  @default(false)
+  canRead        Boolean  @default(true)
+  canUpdate      Boolean  @default(false)
+  canDelete      Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  member       Member       @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  modulo       Modulo       @relation(fields: [moduloId], references: [id], onDelete: Cascade)
+
+  @@unique([memberId, moduloId])
+  @@index([organizationId])
+}
+
+model Modulo {
+  id             String             @id @default(uuid())
+  key            String
+  name           String
+  createdAt      DateTime           @default(now())
+  organizationId String
+  organization   Organization       @relation(fields: [organizationId], references: [id])
+  permissions    MemberPermission[]
+
+  @@unique([organizationId, key])
+  @@map("modulo")
+}
+
+// ===============================================
+// 5. ENTIDADES DE NEGÓCIO (Core)
+// ===============================================
+
+model Empresas {
+  id                String        @id @default(uuid())
+  name              String
+  cnpj              String        @unique
+  endereco          String?
+  telefone          String?
+  representanteNome String?
+  representanteRg   String?
+  representanteCpf  String?
+  representanteTelefone String?
+  Contrato          Contrato[]    @relation("EmpresaContratos")
+  Organization      Organization? @relation(fields: [organizationId], references: [id])
+  organizationId    String?
+
+  @@map("empresas")
+}
+
+model Licitacao {
+  id                     String                  @id @default(cuid())
+  entidade               String                  @db.Text
+  objeto                 String                  @db.Text
+  idOxy                  String?
+  numero                 Int
+  ano                    Int
+  situacao               SituacaoLicitacao
+  modalidade             TipoLicitacao
+  dataPublicacao         DateTime
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @default(now()) @updatedAt
+  organizationId         String?
+  organization           Organization?           @relation(fields: [organizationId], references: [id])
+  bensEServicosReports   BensEServicosReport[]
+  transporteReports      TransporteReport[]
+  terceirizacaoReports   TerceirizacaoReport[]
+  Contratos              Contrato[]              @relation("LicitacaoToContrato")
+  obrasReports           ObrasReport[]
+  fiscalPrincipalReports FiscalPrincipalReport[]
+  tabelaAtrasos          TabelaAtraso[]
+  tableServicos          TableServicos[]
+  tableMediacaos         TableMediacao[]
+  tableObrigacoes        TableObrigacoes[]
+  tableAditivos          TableAditivos[]
+
+  @@unique([numero, ano, modalidade, organizationId])
+}
+
+model Contrato {
+  id                            String                         @id @default(cuid())
+  licitacaoId                   String
+  licitacao                     Licitacao                      @relation("LicitacaoToContrato", fields: [licitacaoId], references: [id])
+  empresaId                     String
+  empresa                       Empresas                       @relation("EmpresaContratos", fields: [empresaId], references: [id])
+  Organization                  Organization?                  @relation(fields: [organizationId], references: [id])
+  organizationId                String?
+  numero                        Int
+  contratado                    String
+  displayContrato               String
+  displayLicitacao              String
+  dataInicio                    DateTime
+  dataFim                       DateTime
+  tipoAto                       String
+  exercicio                     Int
+  objeto                        String?                        @db.Text
+  fiscais                       FiscalContratoLink[]
+  fiscalPrincipal               ContratoFiscal?
+  setoriais                     ContratoSetorial[]
+  bensEServicosReports          BensEServicosReport[]
+  transporteReports             TransporteReport[]
+  terceirizacaoReports          TerceirizacaoReport[]
+  fiscalPrincipalReports        FiscalPrincipalReport[]
+  obrasReports                  ObrasReport[]
+  assinaturasNotificacoes       Notificacoes[]
+  entregaNotificacoes           NotificacaoEntrega[]
+  entregaIncompletaNotificacoes NotificacaoEntregaIncompleta[]
+  notificacoesFiscalTrabalhista NotificacaoFiscalTrabalhista[]
+  notificacoesDesconformidade   NotificacaoDesconformidade[]
+  createdAt                     DateTime?                      @default(now())
+  updatedAt                     DateTime?                      @updatedAt
+  nomeFiscal                    String?
+  idOxy                         String?
+  aditivos                      Aditivo[]
+  empenhos                      Empenho[]
+
+  @@unique([numero, tipoAto, exercicio, organizationId])
+}
+
+model Aditivo {
+  id             String    @id @default(uuid())
+  organizationId String
+  contratoId     String
+  sequencia      Int
+  data           DateTime
+  dataPublicacao DateTime?
+  dataTermino    DateTime?
+  valorAditivo   Float?
+  motivacao      String?   @db.Text
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  contrato     Contrato     @relation(fields: [contratoId], references: [id], onDelete: Cascade)
+
+  @@unique([contratoId, sequencia])
+  @@index([organizationId])
+  @@map("aditivo")
+}
+
+model Empenho {
+  id             String   @id @default(uuid())
+  organizationId String
+  contratoId     String
+  numero         Int
+  exercicio      Int
+  data           DateTime
+  fornecedor     String
+  historico      String?  @db.Text
+  valorEmpenhado Float    @default(0)
+  valorAnulado   Float    @default(0)
+  valorLiquidado Float    @default(0)
+  valorRetido    Float    @default(0)
+  valorPago      Float    @default(0)
+  valorAPagar    Float    @default(0)
+  origem         String   @default("MANUAL")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  contrato     Contrato     @relation(fields: [contratoId], references: [id], onDelete: Cascade)
+
+  @@unique([contratoId, numero, exercicio])
+  @@index([organizationId])
+  @@map("empenho")
+}
+
+// ===============================================
+// 6. FISCAIS E VINCULAÇÕES
+// ===============================================
+
+model FiscalContrato {
+  id                            String                         @id @default(cuid())
+  nome                          String
+  cpf                           String
+  portaria                      String?
+  matricula                     String
+  cargo                         String
+  contato                       String?
+  ativo                         Boolean                        @default(true)
+  Organization                  Organization?                  @relation(fields: [organizationId], references: [id])
+  organizationId                String?
+  user                          User?                          @relation(fields: [userId], references: [id])
+  userId                        String?
+  contratos                     FiscalContratoLink[]
+  bensEServicosReports          BensEServicosReport[]
+  transporteReports             TransporteReport[]
+  obrasReports                  ObrasReport[]
+  terceirizacaoReports          TerceirizacaoReport[]
+  fiscalPrincipalReports        FiscalPrincipalReport[]
+  notificacoes                  Notificacoes[]
+  notificacaoEntregas           NotificacaoEntrega[]
+  notificacaoEntregaIncompletas NotificacaoEntregaIncompleta[]
+  notificacoesFiscalTrabalhista NotificacaoFiscalTrabalhista[]
+  notificacoesDesconformidade   NotificacaoDesconformidade[]
+  createdAt                     DateTime                       @default(now())
+  updatedAt                     DateTime                       @default(now()) @updatedAt
+  ultimaAtualizacao             DateTime?
+  status                        STATUS                         @default(ATIVO)
+
+  @@unique([cpf, organizationId])
+  @@index([organizationId])
+}
+
+model FiscalContratoLink {
+  id               String         @id @default(cuid())
+  fiscalContratoId String
+  fiscalContrato   FiscalContrato @relation(fields: [fiscalContratoId], references: [id], onDelete: Cascade)
+  contratoId       String
+  contrato         Contrato       @relation(fields: [contratoId], references: [id], onDelete: Cascade)
+  dtinicio         String
+  dtfim            String?
+  ativo            Boolean        @default(true)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@unique([fiscalContratoId, contratoId])
+  @@index([contratoId])
+}
+
+model ContratoFiscal {
+  contratoId String   @unique
+  memberId   String
+  contrato   Contrato @relation(fields: [contratoId], references: [id], onDelete: Cascade)
+  member     Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@map("contrato_fiscal")
+}
+
+model ContratoSetorial {
+  contratoId String
+  memberId   String
+  contrato   Contrato @relation(fields: [contratoId], references: [id], onDelete: Cascade)
+  member     Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([contratoId, memberId])
+  @@map("contrato_setorial")
+}
+
+// ===============================================
+// 7. RELATÓRIOS (Reports)
+// ===============================================
+
+model BensEServicosReport {
+  id                                              String         @id @default(cuid())
+  licitacaoId                                     String
+  licitacao                                       Licitacao      @relation(fields: [licitacaoId], references: [id])
+  secretariaNome                                  String
+  licitacaoModalidadeNumero                       String
+  contratoNumero                                  String
+  periodoAnalisadoInicio                          DateTime
+  periodoAnalisadoFim                             DateTime
+  contratada                                      String
+  contratoId                                      String?
+  contrato                                        Contrato?      @relation(fields: [contratoId], references: [id])
+  objeto                                          String         @db.Text
+  item                                            String?
+  descricao                                       String?        @db.Text
+  informacoes                                     String?        @db.Text
+  reducaoGlosaObs                                 String?        @db.Text
+  manutencaoCondicoesHabilitacao                  String
+  manutencaoCondicoesHabilitacaoObs               String?        @db.Text
+  certidaoDebitosFederais                         String
+  certidaoDebitosEstadual                         String
+  certidaoDebitosMunicipal                        String
+  certidaoRegularidadeFGTS                        String
+  certidaoNegativaDebitosTrabalhistas             String
+  regularidadeFiscalTrabalhistaObs                String?        @db.Text
+  cumprimentoObrigacoes                           String
+  cumprimentoObrigacoesObs                        String?        @db.Text
+  atendeChamados                                  String
+  atendeChamadosObs                               String?        @db.Text
+  prepostoAcessivel                               String
+  prepostoAcessivelObs                            String?        @db.Text
+  recebeuNotificacao                              String
+  recebeuNotificacaoObs                           String?        @db.Text
+  aberturaProcessoAdministrativo                  String?        @db.Text
+  aberturaProcessoAdministrativoObs               String?        @db.Text
+  sofreuSancao                                    String?
+  sofreuSancaoObs                                 String?        @db.Text
+  realizaSubcontratacaoIlegal                     String
+  realizaSubcontratacaoIlegalObs                  String?        @db.Text
+  subcontratadaCumpreObrigacoes                   String?
+  subcontratadaCumpreObrigacoesObs                String?        @db.Text
+  contratadaEncaminhaDocumentacaoSubcontratada    String?
+  contratadaEncaminhaDocumentacaoSubcontratadaObs String?        @db.Text
+  garantiaContratual                              String
+  modalidadeGarantia                              String?
+  validadeGarantia                                String?
+  garantiaContratualObs                           String?        @db.Text
+  irregularidadesPendencias                       String?        @db.Text
+  providenciasAdotadas                            String?        @db.Text
+  resultados                                      String?        @db.Text
+  informacoesAdicionais                           String?        @db.Text
+  dynamicData                                     String?        @db.LongText // JSON de campos dinâmicos
+  protocolo                                       String
+  assinaturaDigital                               String         @unique
+  fiscalContratoId                                String
+  fiscalDoContrato                                FiscalContrato @relation(fields: [fiscalContratoId], references: [id])
+  organizationId                                  String
+  organization                                    Organization   @relation(fields: [organizationId], references: [id])
+  createdAt                                       DateTime       @default(now())
+  updatedAt                                       DateTime       @updatedAt
+}
+
+model TransporteReport {
+  id                                              String         @id @default(cuid())
+  licitacaoId                                     String
+  licitacao                                       Licitacao      @relation(fields: [licitacaoId], references: [id])
+  secretariaNome                                  String
+  licitacaoModalidadeNumero                       String
+  contratoNumero                                  String
+  periodoAnalisadoInicio                          DateTime
+  periodoAnalisadoFim                             DateTime
+  contratada                                      String
+  contratoId                                      String?
+  contrato                                        Contrato?      @relation(fields: [contratoId], references: [id])
+  objeto                                          String         @db.Text
+  item                                            String?
+  descricao                                       String?        @db.Text
+  informacoes                                     String?        @db.Text
+  reducaoGlosaObs                                 String?        @db.Text
+  manutencaoCondicoesHabilitacao                  String
+  manutencaoCondicoesHabilitacaoObs               String?        @db.Text
+  certidaoDebitosFederais                         String
+  certidaoDebitosEstadual                         String
+  certidaoDebitosMunicipal                        String
+  certidaoRegularidadeFGTS                        String
+  certidaoNegativaDebitosTrabalhistas             String
+  regularidadeFiscalTrabalhistaObs                String?        @db.Text
+  cumprimentoObrigacoes                           String
+  cumprimentoObrigacoesObs                        String?        @db.Text
+  atendeChamados                                  String
+  atendeChamadosObs                               String?        @db.Text
+  prepostoAcessivel                               String
+  prepostoAcessivelObs                            String?        @db.Text
+  veiculosBomEstado                               String
+  veiculosBomEstadoObs                            String?        @db.Text
+  documentacaoVeiculosMotoristasRegular           String
+  documentacaoVeiculosMotoristasRegularObs        String?        @db.Text
+  motoristasSegurosCorteses                       String
+  motoristasSegurosCortesesObs                    String?        @db.Text
+  recebeuNotificacao                              String
+  recebeuNotificacaoObs                           String?        @db.Text
+  aberturaProcessoAdministrativo                  String?        @db.Text
+  aberturaProcessoAdministrativoObs               String?        @db.Text
+  sofreuSancao                                    String?
+  sofreuSancaoObs                                 String?        @db.Text
+  realizaSubcontratacaoIlegal                     String
+  realizaSubcontratacaoIlegalObs                  String?        @db.Text
+  subcontratadaCumpreObrigacoes                   String?
+  subcontratadaCumpreObrigacoesObs                String?        @db.Text
+  contratadaEncaminhaDocumentacaoSubcontratada    String?
+  contratadaEncaminhaDocumentacaoSubcontratadaObs String?        @db.Text
+  garantiaContratual                              String
+  modalidadeGarantia                              String?
+  validadeGarantia                                String?
+  garantiaContratualObs                           String?        @db.Text
+  irregularidadesPendencias                       String?        @db.Text
+  providenciasAdotadas                            String?        @db.Text
+  resultados                                      String?        @db.Text
+  createdAt                                       DateTime       @default(now())
+  updatedAt                                       DateTime       @updatedAt
+  organizationId                                  String
+  organization                                    Organization   @relation(fields: [organizationId], references: [id])
+  fiscalContratoId                                String
+  fiscalDoContrato                                FiscalContrato @relation(fields: [fiscalContratoId], references: [id])
+  protocolo                                       String
+  assinaturaDigital                               String         @unique
+  informacoesAdicionais                           String?        @db.Text
+  dynamicData                                     String?        @db.LongText
+}
+
+model ObrasReport {
+  id                                              String         @id @default(cuid())
+  licitacaoId                                     String
+  licitacao                                       Licitacao      @relation(fields: [licitacaoId], references: [id])
+  secretariaNome                                  String
+  licitacaoModalidadeNumero                       String
+  contratoNumero                                  String
+  periodoAnalisadoInicio                          DateTime
+  periodoAnalisadoFim                             DateTime
+  contratada                                      String
+  objeto                                          String         @db.Text
+  item                                            String?
+  descricao                                       String?        @db.Text
+  manutencaoHabitacaoFiscalTrabalhista            String
+  manutencaoHabitacaoFiscalTrabalhistaObs         String?        @db.Text
+  certidaoDebitosCreditosFederais                 String
+  certidaoDebitosCreditosEstadual                 String
+  certidaoDebitosCreditosMunicipal                String
+  certidaoRegularidadeFGTS                        String
+  certidaoNegativaDebitosTrabalhistas             String
+  certificadosObs                                 String?        @db.Text
+  controlePrazoExecucao                           String
+  controlePrazoExecucaoObs                        String?        @db.Text
+  controleQualidadeMateriais                      String
+  controleQualidadeMateriaisObs                   String?        @db.Text
+  controleQualidadeProjeto                        String
+  controleQualidadeProjetoObs                     String?        @db.Text
+  controlePrevistoPercentual                      String?
+  controleExecutadoPercentual                     String?
+  controleControleQuantidadeObs                   String?        @db.Text
+  comprimentoObrigacoesContrato                   String
+  comprimentoObrigacoesContratoObs                String?        @db.Text
+  solicitacoesAtendidas                           String
+  solicitacoesAtendidasObs                        String?        @db.Text
+  prepostoAcessivel                               String
+  prepostoAcessivelObs                            String?        @db.Text
+  subcontratacaoIlegal                            String
+  subcontratacaoIlegalObs                         String?        @db.Text
+  subcontratadaCumpreObrigacoes                   String
+  subcontratadaCumpreObrigacoesObs                String?        @db.Text
+  contratadaEncaminhaDocumentacaoSubcontratada    String
+  contratadaEncaminhaDocumentacaoSubcontratadaObs String?        @db.Text
+  houveAditivo                                    String
+  garantiaContratual                              String
+  modalidadeGarantia                              String?
+  validadeGarantia                                String?
+  garantiaContratualObs                           String?        @db.Text
+  recebeuNotificacao                              String?
+  recebeuNotificacaoObs                           String?        @db.Text
+  sancoesAplicadas                                String?
+  sancoesAplicadasObs                             String?        @db.Text
+  aberturaProcessoAdministrativo                  String?
+  aberturaProcessoAdministrativoObs               String?        @db.Text
+  sofreuSancao                                    String?
+  sofreuSancaoObs                                 String?        @db.Text
+  outrasIrregularidadesPendencias                 String?        @db.Text
+  outrasIrregularidadesPendenciasObs              String?        @db.Text
+  providenciasAdotadas                            String?        @db.Text
+  providenciasAdotadasObs                         String?        @db.Text
+  resultados                                      String?        @db.Text
+  resultadosObs                                   String?        @db.Text
+  protocolo                                       String
+  assinaturaDigital                               String         @unique
+  createdAt                                       DateTime       @default(now())
+  updatedAt                                       DateTime       @updatedAt
+  organizationId                                  String
+  organization                                    Organization   @relation(fields: [organizationId], references: [id])
+  fiscalContratoId                                String
+  fiscalDoContrato                                FiscalContrato @relation(fields: [fiscalContratoId], references: [id])
+  contratoId                                      String?
+  contrato                                        Contrato?      @relation(fields: [contratoId], references: [id])
+  informacoesAdicionais                           String?        @db.Text
+  dynamicData                                     String?        @db.LongText
+}
+
+model FiscalPrincipalReport {
+  id                        String         @id @default(cuid())
+  licitacaoId               String
+  licitacao                 Licitacao      @relation(fields: [licitacaoId], references: [id])
+  contratoId                String
+  contrato                  Contrato       @relation(fields: [contratoId], references: [id])
+  organizationId            String
+  organization              Organization   @relation(fields: [organizationId], references: [id])
+  fiscalContratoId          String
+  fiscalDoContrato          FiscalContrato @relation(fields: [fiscalContratoId], references: [id])
+  secretariaNome            String         @default("")
+  licitacaoModalidadeNumero String
+  contratoNumero            String
+  periodoAnalisadoInicio    DateTime
+  periodoAnalisadoFim       DateTime
+  contratada                String
+  objeto                    String         @db.Text
+  atosDeFormato             String?        @db.LongText // JSON: [{num: number, data: string}]
+  medidasAdotadas           String?        @db.LongText // JSON: [{num: number, irregularidade: string, medidasAdotadas: string}]
+  demaisInformacoes         String?        @db.Text
+  dynamicData               String?        @db.LongText // JSON de campos dinâmicos
+  protocolo                 String
+  assinaturaDigital         String         @unique
+  createdAt                 DateTime       @default(now())
+  updatedAt                 DateTime       @default(now()) @updatedAt
+}
+
+model TerceirizacaoReport {
+  id                                              String         @id @default(cuid())
+  licitacaoId                                     String
+  licitacao                                       Licitacao      @relation(fields: [licitacaoId], references: [id])
+  contratoId                                      String
+  contrato                                        Contrato       @relation(fields: [contratoId], references: [id])
+  organizationId                                  String
+  organization                                    Organization   @relation(fields: [organizationId], references: [id])
+  fiscalContratoId                                String
+  fiscalDoContrato                                FiscalContrato @relation(fields: [fiscalContratoId], references: [id])
+  
+  secretariaNome                                  String
+  licitacaoModalidadeNumero                       String
+  contratoNumero                                  String
+  periodoAnalisadoInicio                          DateTime
+  periodoAnalisadoFim                             DateTime
+  contratada                                      String
+  objeto                                          String         @db.Text
+  
+  // 2 - DETALHAMENTO
+  item                                            String?
+  descricao                                       String?        @db.Text
+  informacoes                                     String?        @db.Text
+  reducaoGlosaObs                                 String?        @db.Text
+  houveDescoberturaPosto                          String?        // Sim/Não
+  descoberturaLocal                               String?
+  descoberturaTempo                               String?
+  houveDescontoNota                               String?        // Sim/Não
+  descontoValor                                   String?
+  descontoMotivoNão                               String?        @db.Text
+
+  // 3 - MANUTENÇÃO DAS CONDIÇÕES
+  manutencaoCondicoesHabilitacao                  String
+  manutencaoCondicoesHabilitacaoObs               String?        @db.Text
+  certidaoDebitosFederais                         String
+  certidaoDebitosEstadual                         String
+  certidaoDebitosMunicipal                        String
+  certidaoRegularidadeFGTS                        String
+  certidaoNegativaDebitosTrabalhistas             String
+  regularidadeFiscalTrabalhistaObs                String?        @db.Text
+
+  // 4 - OBRIGAÇÕES
+  cumprimentoObrigacoes                           String
+  cumprimentoObrigacoesObs                        String?        @db.Text
+  atendeChamados                                  String
+  atendeChamadosObs                               String?        @db.Text
+  prepostoAcessivel                               String
+  prepostoAcessivelObs                            String?        @db.Text
+
+  // 5 - NOTIFICAÇÕES
+  recebeuNotificacao                              String
+  recebeuNotificacaoObs                           String?        @db.Text
+  aberturaProcessoAdministrativo                  String?        @db.Text
+  aberturaProcessoAdministrativoObs               String?        @db.Text
+  sofreuSancao                                    String?
+  sofreuSancaoObs                                 String?        @db.Text
+
+  // 6 - SUBCONTRATAÇÃO
+  realizaSubcontratacaoIlegal                     String
+  realizaSubcontratacaoIlegalObs                  String?        @db.Text
+  subcontratadaCumpreObrigacoes                   String?
+  subcontratadaCumpreObrigacoesObs                String?        @db.Text
+  contratadaEncaminhaDocumentacaoSubcontratada    String?
+  contratadaEncaminhaDocumentacaoSubcontratadaObs String?        @db.Text
+
+  // 7 - GARANTIA
+  garantiaContratual                              String
+  modalidadeGarantia                              String?
+  validadeGarantia                                String?
+  garantiaContratualObs                           String?        @db.Text
+
+  // 8 - OCORRÊNCIAS
+  irregularidadesPendencias                       String?        @db.Text
+  providenciasAdotadas                            String?        @db.Text
+  resultados                                      String?        @db.Text
+
+  dynamicData                                     String?        @db.LongText
+  protocolo                                       String
+  assinaturaDigital                               String         @unique
+  createdAt                                       DateTime       @default(now())
+  updatedAt                                       DateTime       @updatedAt
+}
+
+// ===============================================
+// 8. TABELAS AUXILIARES DE RELATÓRIOS
+// ===============================================
+
+model TabelaAtraso {
+  id                        String    @id @default(cuid())
+  licitacaoId               String
+  licitacao                 Licitacao @relation(fields: [licitacaoId], references: [id])
+  secretariaNome            String
+  licitacaoModalidadeNumero String
+  contratoNumero            String
+  periodoAnalisadoInicio    DateTime
+  periodoAnalisadoFim       DateTime
+  contratada                String
+  objeto                    String    @db.Text
+  item                      String?
+  etapa                     String    @db.Text
+  causa                     String    @db.Text
+  reponsavel                String    @db.Text
+  providencias              String    @db.Text
+  observacoes               String    @db.Text
+  diasAtraso                Int
+  percentual                Float
+}
+
+model TableServicos {
+  id                        String    @id @default(cuid())
+  licitacaoId               String
+  licitacao                 Licitacao @relation(fields: [licitacaoId], references: [id])
+  secretariaNome            String
+  licitacaoModalidadeNumero String
+  contratoNumero            String
+  periodoAnalisadoInicio    DateTime
+  periodoAnalisadoFim       DateTime
+  contratada                String
+  objeto                    String    @db.Text
+  item                      String?
+  servico                   String    @db.Text
+  ocorrencias               String    @db.Text
+  providencias              String    @db.Text
+  observacoes               String    @db.Text
+}
+
+model TableMediacao {
+  id                        String    @id @default(cuid())
+  licitacaoId               String
+  licitacao                 Licitacao @relation(fields: [licitacaoId], references: [id])
+  secretariaNome            String
+  licitacaoModalidadeNumero String
+  contratoNumero            String
+  periodoAnalisadoInicio    DateTime
+  periodoAnalisadoFim       DateTime
+  contratada                String
+  objeto                    String    @db.Text
+  item                      String?
+  dataMediacao              DateTime
+  numeroMedicao             String
+  valor                     Decimal
+  dataPagamento             DateTime
+  valorPago                 Decimal
+  numeroRecibo              String
+}
+
+model TableObrigacoes {
+  id                        String    @id @default(cuid())
+  licitacaoId               String
+  licitacao                 Licitacao @relation(fields: [licitacaoId], references: [id])
+  secretariaNome            String
+  licitacaoModalidadeNumero String
+  contratoNumero            String
+  periodoAnalisadoInicio    DateTime
+  periodoAnalisadoFim       DateTime
+  contratada                String
+  objeto                    String    @db.Text
+  item                      String?
+  descricao                 String    @db.Text
+  dispositivoLegal          String    @db.Text
+  providencias              String    @db.Text
+  observacoes               String    @db.Text
+}
+
+model TableAditivos {
+  id                           String    @id @default(cuid())
+  licitacaoId                  String
+  licitacao                    Licitacao @relation(fields: [licitacaoId], references: [id])
+  secretariaNome               String
+  licitacaoModalidadeNumero    String
+  contratoNumero               String
+  periodoAnalisadoInicio       DateTime
+  periodoAnalisadoFim          DateTime
+  contratada                   String
+  objeto                       String    @db.Text
+  item                         String?
+  numero                       String
+  dataPublicacao               DateTime
+  aditivoValorAcrecimoValor    Decimal?
+  aditivoValorAcrecimoPercent  Decimal?
+  aditivoValorSupressaoValor   Decimal?
+  aditivoValorSupressaoPercent Decimal?
+  aditivoValorTotalValor       Decimal?
+  aditivoValorTotalPercent     Decimal?
+  aditivoPrazoAditivado        Int?
+  aditivoPrazoTotal            Int?
+}
+
+// ===============================================
+// 9. NOTIFICAÇÕES
+// ===============================================
+
+model Notificacoes {
+  id                String         @id @default(cuid())
+  contratoId        String
+  contrato          Contrato       @relation(fields: [contratoId], references: [id])
+  organizationId    String
+  organization      Organization   @relation(fields: [organizationId], references: [id])
+  fiscalContratoId  String
+  fiscalDoContrato  FiscalContrato @relation(fields: [fiscalContratoId], references: [id])
+  tipo              String
+  dataEnvio         DateTime
+  emailEnvio        String?
+  dataAssinatura    DateTime?
+  prazo             Int?
+  item              String?
+  assinaturaDigital String         @unique
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @default(now()) @updatedAt
+}
+
+model NotificacaoEntrega {
+  id                     String         @id @default(cuid())
+  contratoId             String
+  contrato               Contrato       @relation(fields: [contratoId], references: [id])
+  organizationId         String
+  organization           Organization   @relation(fields: [organizationId], references: [id])
+  fiscalContratoId       String
+  fiscalDoContrato       FiscalContrato @relation(fields: [fiscalContratoId], references: [id])
+  tipo                   String
+  dataEnvio              DateTime
+  assinaturaDigital      String         @unique
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @default(now()) @updatedAt
+  numeroEmpenho          String?
+  dataEmpenho            DateTime?
+  emailEmpenho           String?
+  responsavelEmpenho     String?
+  prazoEntrega           Int?
+  dataCertidaoOcorrencia DateTime?
+  prazoDefesa            Int?
+  item                   String?
+  desconformidade        String?        @db.Text
+}
+
+model NotificacaoEntregaIncompleta {
+  id                     String         @id @default(cuid())
+  contratoId             String
+  contrato               Contrato       @relation(fields: [contratoId], references: [id])
+  organizationId         String
+  organization           Organization   @relation(fields: [organizationId], references: [id])
+  fiscalContratoId       String
+  fiscalDoContrato       FiscalContrato @relation(fields: [fiscalContratoId], references: [id])
+  tipo                   String
+  dataEnvio              DateTime
+  assinaturaDigital      String         @unique
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @default(now()) @updatedAt
+  numeroEmpenho          String?
+  dataEmpenho            DateTime?
+  emailEmpenho           String?
+  responsavelEmpenho     String?
+  prazoEntrega           Int?
+  dataCertidaoOcorrencia DateTime?
+  prazoDefesa            Int?
+  item                   String?
+  desconformidade        String?        @db.Text
+}
+
+model NotificacaoFiscalTrabalhista {
+  id                String                    @id @default(cuid())
+  contratoId        String
+  contrato          Contrato                  @relation(fields: [contratoId], references: [id])
+  organizationId    String
+  organization      Organization              @relation(fields: [organizationId], references: [id])
+  fiscalContratoId  String
+  fiscalDoContrato  FiscalContrato            @relation(fields: [fiscalContratoId], references: [id])
+  tipo              String
+  dataEnvio         DateTime
+  assinaturaDigital String                    @unique
+  createdAt         DateTime                  @default(now())
+  updatedAt         DateTime                  @default(now()) @updatedAt
+  certidaoNome      String
+  situacaoTipo      SituacaoFiscalTrabalhista
+  prazo             Int
+}
+
+model NotificacaoDesconformidade {
+  id                     String         @id @default(cuid())
+  contratoId             String
+  contrato               Contrato       @relation(fields: [contratoId], references: [id])
+  organizationId         String
+  organization           Organization   @relation(fields: [organizationId], references: [id])
+  fiscalContratoId       String
+  fiscalDoContrato       FiscalContrato @relation(fields: [fiscalContratoId], references: [id])
+  tipo                   String
+  dataEnvio              DateTime
+  assinaturaDigital      String         @unique
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @default(now()) @updatedAt
+  numeroEmpenho          String?
+  dataEmpenho            DateTime?
+  emailEmpenho           String?
+  responsavelEmpenho     String?
+  dataCertidaoOcorrencia DateTime?
+  itemDesconformidade    String         @db.Text
+  prazoRegularizacao     Int
+}
+
+model NotificacaoHistorico {
+  id              String                   @id @default(cuid())
+  notificacaoId   String
+  tipoNotificacao TipoNotificacaoRef
+  organizationId  String
+  organization    Organization             @relation(fields: [organizationId], references: [id])
+  userId          String
+  user            User                     @relation(fields: [userId], references: [id])
+  tipo            TipoHistoricoNotificacao
+  titulo          String
+  descricao       String?                  @db.Text
+  anexoPath       String?
+  anexoNome       String?
+  dataOcorrencia  DateTime?
+  createdAt       DateTime                 @default(now())
+  updatedAt       DateTime                 @default(now()) @updatedAt
+
+  @@index([notificacaoId, tipoNotificacao])
+  @@index([organizationId])
+}
+
+// ===============================================
+// 10. CADASTROS AUXILIARES E LOGS
+// ===============================================
+
+model Lotacoes {
+  id             String       @id @default(uuid())
+  name           String       @unique
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @default(now()) @updatedAt
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  @@map("lotacao")
+}
+
+model TipoRelatorio {
+  id             String       @id @default(uuid())
+  name           String       @unique
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @default(now()) @updatedAt
+  validade       Int
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  @@map("tipo_relatorio")
+}
+
+model AuditLog {
+  id             String       @id @default(uuid())
+  action         LogAction
+  entity         String       @db.Text
+  entityId       String?      @db.Text
+  entityName     String?      @db.Text
+  userId         String       @db.Text
+  userName       String       @db.Text
+  userEmail      String       @db.Text
+  organizationId String
+  description    String?      @db.Text
+  before         String?      @db.LongText
+  after          String?      @db.LongText
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, createdAt])
+  @@map("audit_log")
+}
+
+model ApiSyncLog {
+  id             String   @id @default(uuid())
+  organizationId String
+  status         String // "success" | "error"
+  totalContratos Int?
+  totalFiscais   Int?
+  message        String?  @db.Text
+  createdAt      DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, createdAt])
+  @@map("api_sync_log")
+}
+
+model SystemUpdate {
+  id             String       @id @default(cuid())
+  title          String       @db.Text
+  description    String       @db.LongText
+  version        String?      @db.VarChar(20)
+  isActive       Boolean      @default(true)
+  targetRoles    String?      @db.Text
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@map("system_update")
+}
+
+model FormConfig {
+  id                 String       @id @default(cuid())
+  reportType         String // "BENS_SERVICOS", "TRANSPORTE", "OBRAS"
+  fieldKey           String // Nome técnico
+  label              String       @db.Text
+  description        String?      @db.Text
+  type               String
+  options            String?      @db.TinyText
+  isRequired         Boolean      @default(false)
+  isVisiblePrincipal Boolean      @default(true)
+  isVisibleSetorial  Boolean      @default(true)
+  order              Int          @default(0)
+  section            String?      @db.Text
+  organizationId     String
+  organization       Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  isActive           Boolean      @default(true)
+  isLongText         Boolean      @default(false)
+  hasObs             Boolean      @default(false)
+  requiredObsValue   String?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  @@unique([reportType, fieldKey, organizationId])
+  @@index([organizationId])
+  @@map("form_config")
+}
