@@ -197,7 +197,7 @@ export function ReportPdf({ report, siteUrl }: ReportPdfProps) {
 					<Image src={report.brasaoBase64} style={styles.brasao} />
 					<View style={styles.headerTextContainer}>
 						<Text style={styles.headerTitle}>
-							{report.organizationName} - SIRA
+							{report.organizationName} - ST - Fiscalização e Relatórios
 						</Text>
 						<Text style={styles.headerSubtitle}>
 							{report.secretariaNome?.toLowerCase().startsWith('secretaria')
@@ -264,7 +264,7 @@ export function ReportPdf({ report, siteUrl }: ReportPdfProps) {
 				<Text
 					fixed
 					render={({ pageNumber, totalPages }) =>
-						`Página ${pageNumber} de ${totalPages} | Assinado por: ${report.user?.name} | SIRA`
+						`Página ${pageNumber} de ${totalPages} | Assinado por: ${report.user?.name} | ST - Fiscalização e Relatórios`
 					}
 					style={styles.footer}
 				/>

@@ -296,7 +296,7 @@ export function ReportPdf({ report, siteUrl }: ReportPdfProps) {
 				<View fixed style={styles.header}>
 					<Image src={report.brasaoBase64} style={styles.brasao} />
 					<View style={styles.headerTextContainer}>
-						<Text style={styles.headerTitle}>{report.organizationName} - SIRA</Text>
+						<Text style={styles.headerTitle}>{report.organizationName} - ST - Fiscalização e Relatórios</Text>
 						<Text style={styles.headerSubtitle}>
 							{report.secretariaNome?.toLowerCase().startsWith('secretaria') ? report.secretariaNome : `Secretaria de ${report.secretariaNome}`}
 						</Text>
@@ -326,7 +326,7 @@ export function ReportPdf({ report, siteUrl }: ReportPdfProps) {
 					{report.qrCodeUrl && <Image src={report.qrCodeUrl} style={{ width: 30, height: 30 }} />}
 				</View>
 
-				<Text fixed render={({ pageNumber, totalPages }) => `Página ${pageNumber} de ${totalPages} | Assinado por: ${report.user?.name} | SIRA`} style={styles.footer} />
+				<Text fixed render={({ pageNumber, totalPages }) => `Página ${pageNumber} de ${totalPages} | Assinado por: ${report.user?.name} | ST - Fiscalização e Relatórios`} style={styles.footer} />
 			</Page>
 		</Document>
 	)

@@ -438,7 +438,7 @@ export const createObrasReport = withPermission(
 			qrCodeUrl,
 			protocolo: newProtocol,
 			brasaoBase64,
-			organizationName: organization?.name ?? 'Prefeitura Municipal',
+			organizationName: organization?.name ?? 'Organização',
 			tabelaAtrasos: tabelaAtrasos || [],
 			tabelaServicos: tabelaServicos || [],
 			tabelaMediacoes: tabelaMediacoes || [],

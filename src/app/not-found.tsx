@@ -48,7 +48,7 @@ export default function NotFound() {
 
 			{/* Rodapé sutil */}
 			<p className="mt-20 text-xs text-muted-foreground/50 uppercase tracking-widest font-semibold">
-				SIRA - Sistema Integrado de Relatórios de Acompanhamento
+				ST - Fiscalização e Relatórios
 			</p>
 		</div>
 	)

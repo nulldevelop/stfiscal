@@ -32,7 +32,7 @@ export function LoginForm({
             <div className="flex flex-col gap-2 text-left w-full">
               <h1 className="font-bold text-2xl">Acesse a Plataforma</h1>
               <p className="text-balance text-muted-foreground">
-                Use sua conta da prefeitura para entrar.
+                Use sua conta institucional para entrar.
               </p>
             </div>
 

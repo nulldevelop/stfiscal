@@ -81,7 +81,7 @@ export const DefaultPdfDocument = ({ report }: { report: Report }) => {
 
 					<View style={styles.headerTextContainer}>
 						<Text style={styles.headerTitle}>
-							Prefeitura Municipal de Campina Grande do Sul
+							ST - Fiscalização e Relatórios
 						</Text>
 
 						<Text style={styles.headerSubtitle}>

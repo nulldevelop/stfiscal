@@ -141,7 +141,7 @@ const typeStyles: Record<string, { label: string; className: string }> = {
 	DATE: {
 		label: 'Data',
 		className:
-			'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20',
+			'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20',
 	},
 	LOTACAO: {
 		label: 'Secretaria/Lotação',
@@ -390,7 +390,7 @@ function FieldCard({
 
 	return (
 		<Card
-			className={`group transition-all hover:shadow-md border-l-4 ${config.isActive ? 'border-l-emerald-500' : 'border-l-muted opacity-70'}`}
+			className={`group transition-all hover:shadow-md border-l-4 ${config.isActive ? 'border-l-blue-500' : 'border-l-muted opacity-70'}`}
 		>
 			<CardContent className="p-4">
 				<div className="flex items-start justify-between gap-2 mb-3">
@@ -430,7 +430,7 @@ function FieldCard({
 					{config.isActive ? (
 						<Badge
 							variant="outline"
-							className="bg-emerald-50 text-emerald-700 border-emerald-200 text-[10px] py-0"
+							className="bg-blue-50 text-blue-700 border-blue-200 text-[10px] py-0"
 						>
 							Ativo
 						</Badge>

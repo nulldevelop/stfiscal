@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import '@/styles/globals.css'
 import { Toaster } from 'sonner'
+import { Providers } from '@/components/shared/providers'
 import { ThemeProvider } from '@/components/shared/theme-provider'
 
 const geistSans = Geist({
@@ -15,8 +16,8 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-	title: 'SIRA - PMCGS',
-	description: 'SIRA - Sistema Integrado de Relatórios Administrativos',
+	title: 'ST - Fiscalização e Relatórios',
+	description: 'ST - Fiscalização e Relatórios',
 	openGraph: {
 		images: '/imgs/logo.svg',
 	},
@@ -34,8 +35,10 @@ export default function RootLayout({
 		<html lang="pt-BR" suppressHydrationWarning>
 			<body className={`${geistSans.variable} ${geistMono.variable} text-foreground`}>
 				<ThemeProvider>
-					{children}
-					<Toaster duration={2000} position="top-right" richColors closeButton />
+					<Providers>
+						{children}
+						<Toaster duration={2000} position="top-right" richColors closeButton />
+					</Providers>
 				</ThemeProvider>
 			</body>
 		</html>

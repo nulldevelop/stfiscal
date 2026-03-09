@@ -142,7 +142,7 @@ export const CompleteNotificationPdf = ({
 					{logoDataUri ? (
 						<Image src={logoDataUri} style={styles.logo} />
 					) : (
-						<Text style={{ fontWeight: 'bold' }}>SIRA SYSTEM</Text>
+						<Text style={{ fontWeight: 'bold' }}>ST - Fiscalização e Relatórios</Text>
 					)}
 					<View style={styles.titleContainer}>
 						<Text style={styles.reportTitle}>Relatório Completo</Text>
@@ -242,7 +242,7 @@ export const CompleteNotificationPdf = ({
 				</View>
 
 				<Text style={styles.footer} fixed>
-					Relatório gerado em {format(new Date(), 'dd/MM/yyyy HH:mm')} - SIRA System
+					Relatório gerado em {format(new Date(), 'dd/MM/yyyy HH:mm')} - ST - Fiscalização e Relatórios
 				</Text>
 			</Page>
 		</Document>

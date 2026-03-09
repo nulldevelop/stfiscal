@@ -1,19 +1,17 @@
-import {
-  organizationClient,
-  usernameClient
-} from "better-auth/client/plugins";
-import { createAuthClient } from "better-auth/react";
-
-const getBaseUrl = () => {
-	if (process.env.BETTER_AUTH_URL) {
-		return process.env.BETTER_AUTH_URL;
-	}
-	if (process.env.LINK_URL) {
-		return `https://${process.env.LINK_URL}`;
-	}
-};
+import { organizationClient, usernameClient } from 'better-auth/client/plugins'
+import { createAuthClient } from 'better-auth/react'
 
 export const authClient = createAuthClient({
-	baseURL: getBaseUrl(),
-	plugins: [usernameClient(), organizationClient()],
-});
+	baseURL: process.env.BETTER_AUTH_URL as string,
+	plugins: [organizationClient(), usernameClient()],
+})
+
+export const signInMicrosoft = () =>
+	authClient.signIn.social({ provider: 'microsoft', callbackURL: '/dashboard' })
+
+export const signInGoogle = () =>
+	authClient.signIn.social({ provider: 'google', callbackURL: '/dashboard' })
+
+export const singOut = async () => {
+	await authClient.signOut()
+}

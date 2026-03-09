@@ -13,7 +13,7 @@ import { format, parseISO } from 'date-fns'
 
 const PRIMARY_COLOR = '#000000' // Black
 const SECONDARY_COLOR = '#475569' // Slate 600
-const ACCENT_COLOR = '#10b981' // Emerald 500
+const ACCENT_COLOR = '#3b82f6' // Blue 500
 const BORDER_COLOR = '#e2e8f0' // Slate 200
 const BG_COLOR = '#f0fdf4' // Emerald 50
 
@@ -231,7 +231,7 @@ const logoDataUri = logoImage ? `data:image/png;base64,${logoImage}` : ''
 export const FiscalContractsPdf = ({ fiscal }: FiscalContractsPdfProps) => {
 	return (
 		<Document
-			author="SIRA System"
+			author="ST - Fiscalização e Relatórios"
 			title={`Relatório de Contratos - ${fiscal.name}`}
 		>
 			<Page size="A4" style={styles.page}>
@@ -241,7 +241,7 @@ export const FiscalContractsPdf = ({ fiscal }: FiscalContractsPdfProps) => {
 						<Image src={logoDataUri} style={styles.logo} />
 					) : (
 						<Text style={{ fontWeight: 'bold', fontSize: 16 }}>
-							SIRA SYSTEM
+							ST - Fiscalização e Relatórios
 						</Text>
 					)}
 					<View style={styles.headerInfo}>
@@ -402,7 +402,7 @@ export const FiscalContractsPdf = ({ fiscal }: FiscalContractsPdfProps) => {
 				{/* Footer */}
 				<View style={styles.footer} fixed>
 					<Text style={styles.footerText}>
-						SIRA System - Sistema de Inteligência em Relatórios e Auditoria
+						ST - Fiscalização e Relatórios
 					</Text>
 					<Text
 						style={styles.pageNumber}

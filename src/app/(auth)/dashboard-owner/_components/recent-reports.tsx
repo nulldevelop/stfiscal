@@ -23,8 +23,8 @@ const actionConfig = {
 	CREATE: {
 		label: 'Criação',
 		icon: IconCirclePlus,
-		dot: 'bg-emerald-500',
-		badge: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400',
+		dot: 'bg-blue-500',
+		badge: 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-400',
 	},
 	UPDATE: {
 		label: 'Atualização',

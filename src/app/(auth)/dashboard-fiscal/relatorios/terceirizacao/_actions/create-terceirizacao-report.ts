@@ -212,7 +212,7 @@ export const createTerceirizacaoReport = withPermission(
 			qrCodeUrl,
 			brasaoBase64,
 			configs,
-			organizationName: organization?.name ?? 'Prefeitura Municipal',
+			organizationName: organization?.name ?? 'Organização',
 			organizationCidade: organization?.cidade ?? null,
 		}
 

@@ -56,7 +56,7 @@ export default async function LicitacaoDetailsPage({ params }: PageProps) {
 					</h1>
 					<Badge
 						variant="outline"
-						className="border-emerald-500 text-emerald-700 bg-emerald-50"
+						className="border-blue-500 text-blue-700 bg-blue-50"
 					>
 						{licitacao.modalidade}
 					</Badge>
@@ -68,7 +68,7 @@ export default async function LicitacaoDetailsPage({ params }: PageProps) {
 								<Button
 									variant="ghost"
 									size="icon"
-									className="h-8 w-8 text-emerald-600"
+									className="h-8 w-8 text-blue-600"
 									asChild
 								>
 									<a href={portalUrl} target="_blank" rel="noopener noreferrer">

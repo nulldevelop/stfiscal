@@ -100,7 +100,7 @@ export function EditLicitacaoForm({ licitacao }: EditLicitacaoFormProps) {
 				{/* Coluna 1: Identificação e Processo */}
 				<div className="space-y-6">
 					<div className="flex items-center gap-2 pb-2 border-b">
-						<Building2 className="h-5 w-5 text-emerald-600" />
+						<Building2 className="h-5 w-5 text-blue-600" />
 						<h3 className="text-lg font-medium">Dados da Entidade e Processo</h3>
 					</div>
 
@@ -111,7 +111,7 @@ export function EditLicitacaoForm({ licitacao }: EditLicitacaoFormProps) {
 							name="entidade"
 							value={formData.entidade}
 							onChange={handleChange}
-							placeholder="Ex: Prefeitura Municipal"
+							placeholder="Ex: Câmara Municipal"
 							required
 						/>
 					</div>
@@ -175,7 +175,7 @@ export function EditLicitacaoForm({ licitacao }: EditLicitacaoFormProps) {
 				{/* Coluna 2: Status e Objeto */}
 				<div className="space-y-6">
 					<div className="flex items-center gap-2 pb-2 border-b">
-						<Settings className="h-5 w-5 text-emerald-600" />
+						<Settings className="h-5 w-5 text-blue-600" />
 						<h3 className="text-lg font-medium">Configurações e Detalhes</h3>
 					</div>
 

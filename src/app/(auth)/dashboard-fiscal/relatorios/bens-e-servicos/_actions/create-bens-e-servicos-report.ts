@@ -249,7 +249,7 @@ export const createBensEServicosReport = withPermission(
 			dataInicio: contract.dataInicio,
 			dataFim: contract.dataFim,
 			configs, // Reutiliza a variável configs declarada acima
-			organizationName: organization?.name ?? 'Prefeitura Municipal',
+			organizationName: organization?.name ?? 'Organização',
 			organizationCidade: organization?.cidade ?? null,
 		}
 

@@ -108,8 +108,8 @@ model User {
   banned                Boolean?               @default(false)
   banReason             String?                @db.Text
   banExpires            DateTime?
-  linkedAt              DateTime? // Data em que o usuário foi vinculado à organização
-  fiscalLinkedAt        DateTime? // Data da vinculação automática fiscal/contrato
+  linkedAt              DateTime?
+  fiscalLinkedAt        DateTime?
   members               Member[]
   fiscais               FiscalContrato[]
   notificacaoHistoricos NotificacaoHistorico[]
@@ -205,7 +205,7 @@ model Organization {
   apiSyncLogs                   ApiSyncLog[]
   memberPermissions             MemberPermission[]
   modulos                       Modulo[]
-  
+
   // API Integrations
   apiUrlContratos               String?                        @db.Text
   apiUrlLicitacoes              String?                        @db.Text
@@ -742,7 +742,7 @@ model TerceirizacaoReport {
   organization                                    Organization   @relation(fields: [organizationId], references: [id])
   fiscalContratoId                                String
   fiscalDoContrato                                FiscalContrato @relation(fields: [fiscalContratoId], references: [id])
-  
+
   secretariaNome                                  String
   licitacaoModalidadeNumero                       String
   contratoNumero                                  String
@@ -750,7 +750,7 @@ model TerceirizacaoReport {
   periodoAnalisadoFim                             DateTime
   contratada                                      String
   objeto                                          String         @db.Text
-  
+
   // 2 - DETALHAMENTO
   item                                            String?
   descricao                                       String?        @db.Text

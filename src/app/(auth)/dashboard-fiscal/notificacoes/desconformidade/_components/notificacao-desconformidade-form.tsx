@@ -92,13 +92,13 @@ export function NotificacaoDesconformidadeForm({
 	return (
 		<div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-8 items-start">
 			{/* Formulário */}
-			<Card className="shadow-lg border-emerald-100 py-2">
+			<Card className="shadow-lg border-blue-100 py-2">
 				<CardContent className="">
 					<Form {...form}>
 						<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 							{/* Seção: Dados do Empenho */}
 							<div className="space-y-4">
-								<h4 className="font-semibold text-sm text-emerald-500 border-b border-emerald-100 pb-2">
+								<h4 className="font-semibold text-sm text-blue-500 border-b border-blue-100 pb-2">
 									Dados do Empenho
 								</h4>
 								<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -189,7 +189,7 @@ export function NotificacaoDesconformidadeForm({
 							{/* Seção: Dados da Empresa */}
 							{showEmpresaSection && (
 								<div className="space-y-4">
-									<h4 className="font-semibold text-sm text-emerald-500 border-b border-emerald-100 pb-2">
+									<h4 className="font-semibold text-sm text-blue-500 border-b border-blue-100 pb-2">
 										Dados da Empresa Contratada
 									</h4>
 									<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -247,7 +247,7 @@ export function NotificacaoDesconformidadeForm({
 
 							{/* Seção: Dados da Notificação */}
 							<div className="space-y-4">
-								<h4 className="font-semibold text-sm text-emerald-500 border-b border-emerald-100 pb-2">
+								<h4 className="font-semibold text-sm text-blue-500 border-b border-blue-100 pb-2">
 									Dados da Notificação
 								</h4>
 								<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -323,15 +323,15 @@ export function NotificacaoDesconformidadeForm({
 
 							{/* Seção: ITENS */}
 							<div className="space-y-4">
-								<div className="flex items-center justify-between border-b border-emerald-100 pb-2">
-									<h4 className="font-semibold text-sm text-emerald-700">
+								<div className="flex items-center justify-between border-b border-blue-100 pb-2">
+									<h4 className="font-semibold text-sm text-blue-700">
 										Itens de Desconformidade
 									</h4>
 									<Button
 										type="button"
 										variant="outline"
 										size="sm"
-										className="border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+										className="border-blue-200 text-blue-700 hover:bg-blue-50"
 										onClick={() =>
 											append({
 												titulo: '',
@@ -356,10 +356,10 @@ export function NotificacaoDesconformidadeForm({
 									{fields.map((field, index) => (
 										<div
 											key={field.id}
-											className="p-4 rounded-lg border border-emerald-100 bg-emerald-50/20 space-y-3 relative"
+											className="p-4 rounded-lg border border-blue-100 bg-blue-50/20 space-y-3 relative"
 										>
 											<div className="flex justify-between items-center">
-												<span className="text-xs font-bold text-emerald-600 uppercase">
+												<span className="text-xs font-bold text-blue-600 uppercase">
 													Item #{index + 1}
 												</span>
 												<Button
@@ -448,7 +448,7 @@ export function NotificacaoDesconformidadeForm({
 								<Button
 									type="submit"
 									disabled={isPending}
-									className="bg-emerald-600 hover:bg-emerald-700"
+									className="bg-blue-600 hover:bg-blue-700"
 								>
 									{isPending ? (
 										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -467,7 +467,7 @@ export function NotificacaoDesconformidadeForm({
 			<div className="sticky top-6">
 				<div className="flex flex-col gap-4">
 					<div className="flex items-center justify-between">
-						<h3 className="text-lg font-bold flex items-center gap-2 text-emerald-800">
+						<h3 className="text-lg font-bold flex items-center gap-2 text-blue-800">
 							Visualização em Tempo Real
 						</h3>
 						<span className="text-xs text-muted-foreground  px-2 py-1 rounded-md">

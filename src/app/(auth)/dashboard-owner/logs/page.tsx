@@ -29,7 +29,7 @@ import { Separator } from '@/components/ui/separator'
 const ACTION_CONFIG: Record<LogAction, { label: string; class: string; icon: any }> = {
 	CREATE: { 
 		label: 'Criação', 
-		class: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400', 
+		class: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-500/10 dark:text-blue-400', 
 		icon: IconPlus 
 	},
 	UPDATE: { 

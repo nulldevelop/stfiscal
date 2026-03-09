@@ -160,7 +160,7 @@ export async function createFiscalPrincipalReport(
 		atosDeFormato: atosDeFormato || [],
 		medidasAdotadas: medidasAdotadas || [],
 		demaisInformacoes: demaisInformacoes || '',
-		organizationName: organization?.name ?? 'Prefeitura Municipal',
+		organizationName: organization?.name ?? 'Organização',
 		organizationCidade: organization?.cidade ?? null,
 		type: 'Relatório do Fiscal Tecnico',
 		dataInicio: contract.dataInicio,

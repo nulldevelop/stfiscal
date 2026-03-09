@@ -644,10 +644,10 @@ export function ObrasReportForm({
 		// Tabela 5 - Aditivos
 		if (fieldKey === 'houveAditivo' && watchAditivo === 'Sim') {
 			return (
-				<Card className="border-2 border-emerald-200 py-0">
+				<Card className="border-2 border-blue-200 py-0">
 					<CardHeader className="rounded-t-lg py-2">
 						<div className="flex items-center justify-between">
-							<CardTitle className="text-sm font-bold text-emerald-800">
+							<CardTitle className="text-sm font-bold text-blue-800">
 								TABELA 5 – ADITIVOS
 							</CardTitle>
 							<Button

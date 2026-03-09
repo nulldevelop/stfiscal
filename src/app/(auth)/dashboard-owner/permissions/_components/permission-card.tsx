@@ -91,7 +91,7 @@ const ROLE_COLORS: Record<string, string> = {
 	SUPORT:
 		'bg-amber-500/10 text-amber-700 border-amber-200 dark:bg-amber-500/20 dark:text-amber-400 dark:border-amber-800',
 	FISCAL_PRINCIPAL:
-		'bg-emerald-500/10 text-emerald-700 border-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-400 dark:border-emerald-800',
+		'bg-blue-500/10 text-blue-700 border-blue-200 dark:bg-blue-500/20 dark:text-blue-400 dark:border-blue-800',
 	FISCAL_SETORIAL:
 		'bg-teal-500/10 text-teal-700 border-teal-200 dark:bg-teal-500/20 dark:text-teal-400 dark:border-teal-800',
 	GESTOR_CONTRATOS:

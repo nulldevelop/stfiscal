@@ -88,13 +88,13 @@ export function NotificacaoEntregaIncompletaForm({
 	return (
 		<div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-8 items-start">
 			{/* Formulário */}
-			<Card className="shadow-lg border-emerald-100 py-2">
+			<Card className="shadow-lg border-blue-100 py-2">
 				<CardContent className="">
 					<Form {...form}>
 						<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 							{/* Seção: Dados do Empenho */}
 							<div className="space-y-4">
-								<h4 className="font-semibold text-sm text-emerald-700 border-b border-emerald-100 pb-2">
+								<h4 className="font-semibold text-sm text-blue-700 border-b border-blue-100 pb-2">
 									Dados do Empenho
 								</h4>
 								<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -185,7 +185,7 @@ export function NotificacaoEntregaIncompletaForm({
 							{/* Seção: Dados da Empresa */}
 							{showEmpresaSection && (
 								<div className="space-y-4">
-									<h4 className="font-semibold text-sm text-emerald-700 border-b border-emerald-100 pb-2">
+									<h4 className="font-semibold text-sm text-blue-700 border-b border-blue-100 pb-2">
 										Dados da Empresa Contratada
 									</h4>
 									<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -243,7 +243,7 @@ export function NotificacaoEntregaIncompletaForm({
 
 							{/* Seção: Dados da Notificação */}
 							<div className="space-y-4">
-								<h4 className="font-semibold text-sm text-emerald-700 border-b border-emerald-100 pb-2">
+								<h4 className="font-semibold text-sm text-blue-700 border-b border-blue-100 pb-2">
 									Dados da Notificação
 								</h4>
 								<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -399,7 +399,7 @@ export function NotificacaoEntregaIncompletaForm({
 			<div className="sticky top-6">
 				<div className="flex flex-col gap-4">
 					<div className="flex items-center justify-between">
-						<h3 className="text-lg font-bold flex items-center gap-2 text-emerald-800">
+						<h3 className="text-lg font-bold flex items-center gap-2 text-blue-800">
 							Visualização em Tempo Real
 						</h3>
 						<span className="text-xs text-muted-foreground  px-2 py-1 rounded-md">

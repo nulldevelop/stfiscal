@@ -70,7 +70,7 @@ export function EditEmpresaForm({ empresa }: EditEmpresaFormProps) {
 				{/* Coluna 1: Dados da Empresa */}
 				<div className="space-y-6">
 					<div className="flex items-center gap-2 pb-2 border-b">
-						<Building2 className="h-5 w-5 text-emerald-600" />
+						<Building2 className="h-5 w-5 text-blue-600" />
 						<h3 className="text-lg font-medium">Dados da Empresa</h3>
 					</div>
 
@@ -117,7 +117,7 @@ export function EditEmpresaForm({ empresa }: EditEmpresaFormProps) {
 				{/* Coluna 2: Representante Legal */}
 				<div className="space-y-6">
 					<div className="flex items-center gap-2 pb-2 border-b">
-						<User className="h-5 w-5 text-emerald-600" />
+						<User className="h-5 w-5 text-blue-600" />
 						<h3 className="text-lg font-medium">Representante Legal</h3>
 					</div>
 

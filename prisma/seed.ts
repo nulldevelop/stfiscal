@@ -12,7 +12,7 @@ const MODULES = [
 ]
 
 async function main() {
-	const orgName = 'Prefeitura Municipal de Campina Grande do Sul'
+	const orgName = 'ST - Fiscalização e Relatórios'
 	const slug = orgName
 		.toLowerCase()
 		.normalize('NFD')

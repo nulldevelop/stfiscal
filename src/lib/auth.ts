@@ -2,21 +2,13 @@ import { betterAuth } from 'better-auth'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
 import { username } from 'better-auth/plugins'
 import { organization } from 'better-auth/plugins/organization'
-import { ensureMember } from '@/utils/ensure-member'
+import { ensureMember } from '../utils/ensure-member'
 import { prisma } from './prisma'
 
 export const auth = betterAuth({
 	database: prismaAdapter(prisma, {
 		provider: 'mysql',
 	}),
-
-	account: {
-		accountLinking: {
-			enabled: true,
-			trustedProviders: ['google', 'microsoft'],
-		},
-	},
-
 	emailAndPassword: {
 		enabled: true,
 	},
@@ -40,7 +32,7 @@ export const auth = betterAuth({
 		window: 60,
 		max: 50,
 		customRules: {
-			'/': { window: 60, max: 5 },
+			'/sign-in': { window: 60, max: 5 },
 			'/sign-up': { window: 60, max: 5 },
 		},
 	},
@@ -61,6 +53,33 @@ export const auth = betterAuth({
 					await ensureMember(user.id, user.email.toLowerCase()).catch((e) =>
 						console.error('Erro ao criar member no cadastro:', e),
 					)
+				},
+			},
+		},
+
+		session: {
+			create: {
+				after: async (session) => {
+					try {
+						const user = await prisma.user.findUnique({
+							where: { id: session.userId },
+							select: { email: true },
+						})
+						if (!user?.email) return
+
+						const result = await ensureMember(
+							session.userId,
+							user.email.toLowerCase(),
+						)
+						if (!result) return
+
+						await prisma.session.update({
+							where: { id: session.id },
+							data: { activeOrganizationId: result.organizationId },
+						})
+					} catch (error) {
+						console.error('Erro ao configurar sessão:', error)
+					}
 				},
 			},
 		},

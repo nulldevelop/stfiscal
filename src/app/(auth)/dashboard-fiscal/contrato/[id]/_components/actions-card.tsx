@@ -26,7 +26,7 @@ export function ActionsCard({ contrato, userRole }: ActionsCardProps) {
 						<Button
 							asChild
 							variant="outline"
-							className="justify-start gap-2 h-12 border-emerald-600 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-bold shadow-sm"
+							className="justify-start gap-2 h-12 border-blue-600 bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold shadow-sm"
 						>
 							<Link
 								href={`/dashboard-fiscal/relatorios/fiscal-principal?contratoId=${contrato.id}`}

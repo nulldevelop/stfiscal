@@ -44,7 +44,7 @@ export default async function NotificacaoEntregaIncompletaPage({
 			<div className="flex items-center gap-4">
 				<BackButton />
 				<div>
-					<h1 className="text-2xl font-bold tracking-tight text-emerald-800">
+					<h1 className="text-2xl font-bold tracking-tight text-blue-800">
 						Notificação de Entrega Incompleta
 					</h1>
 					<p className="text-muted-foreground">

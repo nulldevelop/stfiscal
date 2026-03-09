@@ -101,7 +101,7 @@ export function FiscalContractsList({
 				<Button
 					variant="outline"
 					size="sm"
-					className="gap-2 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 border-emerald-200"
+					className="gap-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 border-blue-200"
 					onClick={handleExportReport}
 					disabled={isExporting || !fiscalUserId}
 				>

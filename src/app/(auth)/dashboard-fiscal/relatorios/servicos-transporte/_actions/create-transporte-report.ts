@@ -261,7 +261,7 @@ export const createTransporteReport = withPermission(
 			dataInicio: contract.dataInicio,
 			dataFim: contract.dataFim,
 			configs,
-			organizationName: organization?.name ?? 'Prefeitura Municipal',
+			organizationName: organization?.name ?? 'Organização',
 			organizationCidade: organization?.cidade ?? null,
 		}
 
