@@ -9,8 +9,8 @@ import { prisma } from '@/lib/prisma'
 export const linkFiscalPrincipal = withPermission(
 	'update',
 	async (
-		ctx,
-		{ contratoId, memberId }: { contratoId, memberId: string },
+		_ctx,
+		{ contratoId, memberId }: { contratoId: string; memberId: string },
 	) => {
 		await prisma.contratoFiscal.upsert({
 			where: { contratoId },
@@ -25,7 +25,7 @@ export const linkFiscalPrincipal = withPermission(
 
 export const unlinkFiscalPrincipal = withPermission(
 	'update',
-	async (_ctx, contratoId: string) => {
+	async (__ctx, contratoId: string) => {
 		await prisma.contratoFiscal.delete({ where: { contratoId } })
 		revalidatePath(`/dashboard-gestor/contratos/${contratoId}`)
 		return { success: true as const, data: 'Fiscal tecnico removido.' }
@@ -38,8 +38,8 @@ export const unlinkFiscalPrincipal = withPermission(
 export const linkFiscalSetorial = withPermission(
 	'update',
 	async (
-		ctx,
-		{ contratoId, memberId }: { contratoId, memberId: string },
+		_ctx,
+		{ contratoId, memberId }: { contratoId: string; memberId: string },
 	) => {
 		await prisma.contratoSetorial.upsert({
 			where: { contratoId_memberId: { contratoId, memberId } },
@@ -55,8 +55,8 @@ export const linkFiscalSetorial = withPermission(
 export const unlinkFiscalSetorial = withPermission(
 	'update',
 	async (
-		ctx,
-		{ contratoId, memberId }: { contratoId, memberId: string },
+		__ctx,
+		{ contratoId, memberId }: { contratoId: string; memberId: string },
 	) => {
 		await prisma.contratoSetorial.delete({
 			where: { contratoId_memberId: { contratoId, memberId } },
