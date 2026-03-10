@@ -46,7 +46,7 @@ export function LogDetailDialog({
 	const getActionColor = (act?: string | null) => {
 		const normalized = act?.toUpperCase() || ''
 		if (normalized.includes('CRIA') || normalized.includes('CREATE')) {
-			return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20'
+			return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
 		}
 		if (normalized.includes('ATUA') || normalized.includes('UPDATE')) {
 			return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20'
@@ -136,7 +136,7 @@ export function LogDetailDialog({
 								<div className="space-y-3">
 									<div className="flex items-center justify-between">
 										<div className="flex items-center gap-2">
-											<div className="h-2 w-2 rounded-full bg-blue-500" />
+											<div className="h-2 w-2 rounded-full bg-emerald-500" />
 											<h4 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
 												Novo Estado
 											</h4>

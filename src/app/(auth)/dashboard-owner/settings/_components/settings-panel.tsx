@@ -116,7 +116,7 @@ export function SettingsPanel({
 								className={cn(
 									'ml-2 h-2 w-2 rounded-full',
 									apiConfig.lastSyncStatus === 'success'
-										? 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]'
+										? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]'
 										: 'bg-destructive shadow-[0_0_8px_rgba(239,68,68,0.5)]',
 								)}
 							/>
@@ -140,7 +140,7 @@ export function SettingsPanel({
 							className={cn(
 								'mr-2 h-2 w-2 rounded-full',
 								status === 'ACTIVE'
-									? 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]'
+									? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]'
 									: 'bg-muted-foreground/50',
 							)}
 						/>

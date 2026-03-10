@@ -34,7 +34,7 @@ const roleConfig: Record<string, { label: string; className: string }> = {
 	FISCAL_PRINCIPAL: {
 		label: 'Fiscal Tecnico',
 		className:
-			'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300 border-0',
+			'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 border-0',
 	},
 	FISCAL_SETORIAL: {
 		label: 'Fiscal Administrativo',

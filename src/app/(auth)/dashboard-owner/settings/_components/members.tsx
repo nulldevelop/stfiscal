@@ -64,7 +64,7 @@ const roleColor: Record<Role, string> = {
 	OWNER: 'bg-amber-500/10 text-amber-700 dark:text-amber-400',
 	ADMIN: 'bg-blue-500/10 text-blue-700 dark:text-blue-400',
 	SUPORT: 'bg-purple-500/10 text-purple-700 dark:text-purple-400',
-	FISCAL_PRINCIPAL: 'bg-blue-500/10 text-blue-700 dark:text-blue-400',
+	FISCAL_PRINCIPAL: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400',
 	FISCAL_SETORIAL: 'bg-teal-500/10 text-teal-700 dark:text-teal-400',
 	GESTOR_CONTRATOS: 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-400',
 	USER: 'bg-muted text-muted-foreground',

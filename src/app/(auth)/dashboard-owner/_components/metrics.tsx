@@ -48,9 +48,9 @@ const getMetrics = (data: MetricsData) => [
 		value: data.fiscaisAtivos,
 		description: 'em atuação',
 		icon: IconShield,
-		iconColor: 'text-blue-600 dark:text-blue-400',
-		iconBg: 'bg-blue-50 dark:bg-blue-950/60',
-		borderColor: 'border-l-blue-500',
+		iconColor: 'text-emerald-600 dark:text-emerald-400',
+		iconBg: 'bg-emerald-50 dark:bg-emerald-950/60',
+		borderColor: 'border-l-emerald-500',
 	},
 ]
 

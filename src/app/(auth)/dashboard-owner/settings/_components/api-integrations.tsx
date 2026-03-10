@@ -58,8 +58,8 @@ const endpoints = [
 		label: 'Responsáveis',
 		description: 'Fiscais vinculados a cada contrato',
 		icon: UserCheck,
-		color: 'text-blue-500',
-		bg: 'bg-blue-500/10',
+		color: 'text-emerald-500',
+		bg: 'bg-emerald-500/10',
 		placeholder:
 			'https://portal.oxy.elotech.com.br/.../api/responsaveis/contrato',
 	},
@@ -174,13 +174,13 @@ export function ApiIntegrations({ config }: Props) {
 			<div className={`relative overflow-hidden rounded-xl border p-5 ${
 				lastSync
 					? isSuccess
-						? 'border-blue-500/20 bg-blue-500/5'
+						? 'border-emerald-500/20 bg-emerald-500/5'
 						: 'border-destructive/20 bg-destructive/5'
 					: 'border-border bg-muted/30'
 			}`}>
 				{/* Decorative glow */}
 				{lastSync && (
-					<div className={`pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full blur-2xl opacity-20 ${isSuccess ? 'bg-blue-500' : 'bg-destructive'}`} />
+					<div className={`pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full blur-2xl opacity-20 ${isSuccess ? 'bg-emerald-500' : 'bg-destructive'}`} />
 				)}
 
 				<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -188,7 +188,7 @@ export function ApiIntegrations({ config }: Props) {
 						<div className={`mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${
 							lastSync
 								? isSuccess
-									? 'bg-blue-500/15'
+									? 'bg-emerald-500/15'
 									: 'bg-destructive/15'
 								: 'bg-muted'
 						}`}>
@@ -196,7 +196,7 @@ export function ApiIntegrations({ config }: Props) {
 								<Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
 							) : lastSync ? (
 								isSuccess ? (
-									<CheckCircle2 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+									<CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
 								) : (
 									<XCircle className="h-5 w-5 text-destructive" />
 								)
@@ -211,7 +211,7 @@ export function ApiIntegrations({ config }: Props) {
 								{lastSync ? (
 									<Badge
 										variant={isSuccess ? 'default' : 'destructive'}
-										className={`text-[10px] px-1.5 py-0 ${isSuccess ? 'bg-blue-500/15 text-blue-700 dark:text-blue-400 border-blue-500/20' : ''}`}
+										className={`text-[10px] px-1.5 py-0 ${isSuccess ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/20' : ''}`}
 									>
 										{isSuccess ? 'Sucesso' : 'Falhou'}
 									</Badge>
@@ -234,7 +234,7 @@ export function ApiIntegrations({ config }: Props) {
 							)}
 
 							{config?.lastSyncMessage && (
-								<p className={`text-xs mt-1 ${isSuccess ? 'text-blue-700 dark:text-blue-400' : 'text-destructive'}`}>
+								<p className={`text-xs mt-1 ${isSuccess ? 'text-emerald-700 dark:text-emerald-400' : 'text-destructive'}`}>
 									{config.lastSyncMessage}
 								</p>
 							)}
@@ -294,7 +294,7 @@ export function ApiIntegrations({ config }: Props) {
 											<div className="flex items-center gap-1.5">
 												<p className="text-xs font-semibold">{ep.label}</p>
 												{filled && (
-													<span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+													<span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
 												)}
 											</div>
 											<p className="text-[10px] text-muted-foreground truncate">
@@ -445,7 +445,7 @@ export function ApiIntegrations({ config }: Props) {
 								</Label>
 								<Input
 									id="smtp-from"
-									placeholder="noreply@stfiscal.gov.br"
+									placeholder="noreply@prefeitura.gov.br"
 									value={smtpFrom}
 									onChange={(e) => setSmtpFrom(e.target.value)}
 								/>
@@ -456,7 +456,7 @@ export function ApiIntegrations({ config }: Props) {
 								</Label>
 								<Input
 									id="notify-email"
-									placeholder="admin@stfiscal.gov.br"
+									placeholder="admin@prefeitura.gov.br"
 									value={notifyEmail}
 									onChange={(e) => setNotifyEmail(e.target.value)}
 								/>
