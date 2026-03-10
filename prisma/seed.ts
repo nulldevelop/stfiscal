@@ -38,7 +38,7 @@ async function main() {
 			cnpj: '76.105.600/0001-86',
 			status: 'ACTIVE',
 			createdAt: new Date(),
-			logo: 'https://campinagrandedosul.pr.gov.br/Downloads/Imagens/2019/1/acirgtlkbv0.png',
+			logo: 'https://campinagrandedosul.pr.gov.br/Downloads/images/2019/1/acirgtlkbv0.png',
 		},
 	})
 

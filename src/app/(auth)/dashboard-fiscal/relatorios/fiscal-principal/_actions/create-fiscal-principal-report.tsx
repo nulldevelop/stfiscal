@@ -90,9 +90,9 @@ export async function createFiscalPrincipalReport(
 		newProtocol = `FP-${new Date().getFullYear()}-00001`
 	}
 
-	const atosDeFormato = dynamicData?.atosDeFormato;
-	const medidasAdotadas = dynamicData?.medidasAdotadas;
-	const demaisInformacoes = dynamicData?.demaisInformacoes;
+	const atosDeFormato = dynamicData?.atosDeFormato
+	const medidasAdotadas = dynamicData?.medidasAdotadas
+	const demaisInformacoes = dynamicData?.demaisInformacoes
 
 	const tempId = crypto.randomUUID()
 	const newReport = await prisma.fiscalPrincipalReport.create({
@@ -101,7 +101,8 @@ export async function createFiscalPrincipalReport(
 			contratoId: baseData.contratoId,
 			organizationId,
 			fiscalContratoId: fiscalContrato.id,
-			licitacaoModalidadeNumero: baseData.licitacaoModalidadeNumero || contract.displayLicitacao || '',
+			licitacaoModalidadeNumero:
+				baseData.licitacaoModalidadeNumero || contract.displayLicitacao || '',
 			contratoNumero: baseData.contratoNumero || contract.displayContrato || '',
 			secretariaNome: baseData.secretariaNome || 'Não informada',
 			periodoAnalisadoInicio: new Date(baseData.periodoAnalisadoInicio),
@@ -139,7 +140,7 @@ export async function createFiscalPrincipalReport(
 	})
 
 	// Brasão
-	const brasaoPath = path.join(process.cwd(), 'public', 'imgs', 'Brasao.png')
+	const brasaoPath = path.join(process.cwd(), 'public', 'images', 'Brasao.png')
 	let brasaoBase64 = ''
 	try {
 		const buf = fs.readFileSync(brasaoPath)

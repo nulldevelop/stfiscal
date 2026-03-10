@@ -222,7 +222,7 @@ const formatDate = (date: string | Date | null | undefined) => {
 	}
 }
 
-const logoPath = path.join(process.cwd(), 'public/imgs', 'LogoHorizontal.png')
+const logoPath = path.join(process.cwd(), 'public/images', 'LogoHorizontal.png')
 const logoImage = fs.existsSync(logoPath)
 	? fs.readFileSync(logoPath).toString('base64')
 	: ''
@@ -315,8 +315,9 @@ export const FiscalContractsPdf = ({ fiscal }: FiscalContractsPdfProps) => {
 
 							{/* Table Body */}
 							{fiscal.contratos.map((contrato, index) => {
-								const tipoLicitacao = MODALIDADE_MAP[contrato.licitacaoModalidade || ''] || 6
-								const licitacaoUrl = contrato.licitacaoNumero 
+								const tipoLicitacao =
+									MODALIDADE_MAP[contrato.licitacaoModalidade || ''] || 6
+								const licitacaoUrl = contrato.licitacaoNumero
 									? `https://campinagrandedosul.oxy.elotech.com.br/portaltransparencia/1/licitacoes/detalhes?entidade=1&exercicio=${contrato.licitacaoAno}&tipoLicitacao=${tipoLicitacao}&licitacao=${contrato.licitacaoNumero}`
 									: null
 
@@ -335,7 +336,10 @@ export const FiscalContractsPdf = ({ fiscal }: FiscalContractsPdfProps) => {
 													src={`https://campinagrandedosul.oxy.elotech.com.br/portaltransparencia/1/contratos/detalhes?id=${contrato.idOxy}`}
 													style={[
 														styles.boldCellText,
-														{ color: ACCENT_COLOR, textDecoration: 'underline' },
+														{
+															color: ACCENT_COLOR,
+															textDecoration: 'underline',
+														},
 													]}
 												>
 													{contrato.displayContrato}
@@ -352,7 +356,10 @@ export const FiscalContractsPdf = ({ fiscal }: FiscalContractsPdfProps) => {
 													src={licitacaoUrl}
 													style={[
 														styles.cellText,
-														{ color: ACCENT_COLOR, textDecoration: 'underline' },
+														{
+															color: ACCENT_COLOR,
+															textDecoration: 'underline',
+														},
 													]}
 												>
 													{contrato.displayLicitacao}
@@ -401,9 +408,7 @@ export const FiscalContractsPdf = ({ fiscal }: FiscalContractsPdfProps) => {
 
 				{/* Footer */}
 				<View style={styles.footer} fixed>
-					<Text style={styles.footerText}>
-						ST - Fiscalização e Relatórios
-					</Text>
+					<Text style={styles.footerText}>ST - Fiscalização e Relatórios</Text>
 					<Text
 						style={styles.pageNumber}
 						render={({ pageNumber, totalPages }) =>

@@ -1,15 +1,15 @@
+import fs from 'node:fs'
+import path from 'node:path'
 import {
 	Document,
+	Image,
 	Page,
 	StyleSheet,
 	Text,
 	View,
-	Image,
 } from '@react-pdf/renderer'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import path from 'node:path'
-import fs from 'node:fs'
 import type { NotificationWithHistorico } from '../_data-access/get-notifications-by-empresa'
 
 const styles = StyleSheet.create({
@@ -125,7 +125,7 @@ interface CompleteNotificationPdfProps {
 	historicos: any[]
 }
 
-const logoPath = path.join(process.cwd(), 'public/imgs', 'LogoHorizontal.png')
+const logoPath = path.join(process.cwd(), 'public/images', 'LogoHorizontal.png')
 const logoImage = fs.existsSync(logoPath)
 	? fs.readFileSync(logoPath).toString('base64')
 	: ''
@@ -142,7 +142,9 @@ export const CompleteNotificationPdf = ({
 					{logoDataUri ? (
 						<Image src={logoDataUri} style={styles.logo} />
 					) : (
-						<Text style={{ fontWeight: 'bold' }}>ST - Fiscalização e Relatórios</Text>
+						<Text style={{ fontWeight: 'bold' }}>
+							ST - Fiscalização e Relatórios
+						</Text>
 					)}
 					<View style={styles.titleContainer}>
 						<Text style={styles.reportTitle}>Relatório Completo</Text>
@@ -181,7 +183,9 @@ export const CompleteNotificationPdf = ({
 						</View>
 						<View style={styles.gridItem}>
 							<Text style={styles.label}>Assinatura Digital</Text>
-							<Text style={[styles.value, { fontSize: 7, fontFamily: 'Courier' }]}>
+							<Text
+								style={[styles.value, { fontSize: 7, fontFamily: 'Courier' }]}
+							>
 								{notification.assinaturaDigital}
 							</Text>
 						</View>
@@ -196,40 +200,60 @@ export const CompleteNotificationPdf = ({
 								<View style={styles.historyHeader}>
 									<Text style={styles.historyTitle}>
 										{h.titulo}
-										<Text style={{ color: '#888', fontWeight: 'normal', fontSize: 8 }}>
+										<Text
+											style={{
+												color: '#888',
+												fontWeight: 'normal',
+												fontSize: 8,
+											}}
+										>
 											{' '}
 											• {h.tipo}
 										</Text>
 									</Text>
 									<Text style={styles.historyMeta}>
-										Data do Registro: {format(new Date(h.dataOcorrencia || h.createdAt), 'dd/MM/yyyy', {
-											locale: ptBR,
-										})}
+										Data do Registro:{' '}
+										{format(
+											new Date(h.dataOcorrencia || h.createdAt),
+											'dd/MM/yyyy',
+											{
+												locale: ptBR,
+											},
+										)}
 									</Text>
 								</View>
 								<Text style={styles.historyMeta}>
-									Por: {h.user?.name || 'Sistema'} • No sistema em: {format(new Date(h.createdAt), 'dd/MM/yyyy HH:mm', {
+									Por: {h.user?.name || 'Sistema'} • No sistema em:{' '}
+									{format(new Date(h.createdAt), 'dd/MM/yyyy HH:mm', {
 										locale: ptBR,
 									})}
 								</Text>
-								{h.descricao && <Text style={styles.historyDesc}>{h.descricao}</Text>}
-								
-								{/* Renderizar imagens processadas (seja de anexo imagem ou PDF convertido) */}
+								{h.descricao && (
+									<Text style={styles.historyDesc}>{h.descricao}</Text>
+								)}
+
+								{/* Renderizar images processadas (seja de anexo imagem ou PDF convertido) */}
 								{h.processedImages && h.processedImages.length > 0 && (
 									<View style={{ marginTop: 10 }}>
 										{h.processedImages.map((imgUri: string, imgIdx: number) => (
-											<Image 
-												key={`${h.id}-img-${imgIdx}`} 
-												src={imgUri} 
-												style={styles.attachmentImage} 
+											<Image
+												key={`${h.id}-img-${imgIdx}`}
+												src={imgUri}
+												style={styles.attachmentImage}
 											/>
 										))}
 									</View>
 								)}
 
 								{h.anexoNome && !h.processedImages && (
-									<Text style={[styles.historyMeta, { marginTop: 4, color: '#0066cc' }]}>
-										Anexo: {h.anexoNome} (Arquivo não suportado para exibição direta)
+									<Text
+										style={[
+											styles.historyMeta,
+											{ marginTop: 4, color: '#0066cc' },
+										]}
+									>
+										Anexo: {h.anexoNome} (Arquivo não suportado para exibição
+										direta)
 									</Text>
 								)}
 							</View>
@@ -242,7 +266,8 @@ export const CompleteNotificationPdf = ({
 				</View>
 
 				<Text style={styles.footer} fixed>
-					Relatório gerado em {format(new Date(), 'dd/MM/yyyy HH:mm')} - ST - Fiscalização e Relatórios
+					Relatório gerado em {format(new Date(), 'dd/MM/yyyy HH:mm')} - ST -
+					Fiscalização e Relatórios
 				</Text>
 			</Page>
 		</Document>

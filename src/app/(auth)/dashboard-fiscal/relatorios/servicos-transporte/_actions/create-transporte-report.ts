@@ -6,12 +6,11 @@ import pdf from '@react-pdf/renderer'
 import qrcode from 'qrcode'
 import React from 'react'
 import type { z } from 'zod'
+import { withPermission } from '@/lib/permissions/with-permission'
 import { prisma } from '@/lib/prisma'
 import { simpleHash } from '@/utils/hash'
 import { ReportPdf } from '../_components/report-pdf'
 import { formSchemaTransporte } from './action-schema'
-
-import { withPermission } from '@/lib/permissions/with-permission'
 
 export const createTransporteReport = withPermission(
 	'create',
@@ -156,8 +155,10 @@ export const createTransporteReport = withPermission(
 				// Radio fields obrigatórios no banco (fallbacks seguros)
 				manutencaoCondicoesHabilitacao:
 					(values as any).manutencaoCondicoesHabilitacao || 'Sim',
-				certidaoDebitosFederais: (values as any).certidaoDebitosFederais || 'Sim',
-				certidaoDebitosEstadual: (values as any).certidaoDebitosEstadual || 'Sim',
+				certidaoDebitosFederais:
+					(values as any).certidaoDebitosFederais || 'Sim',
+				certidaoDebitosEstadual:
+					(values as any).certidaoDebitosEstadual || 'Sim',
 				certidaoDebitosMunicipal:
 					(values as any).certidaoDebitosMunicipal || 'Sim',
 				certidaoRegularidadeFGTS:
@@ -175,7 +176,8 @@ export const createTransporteReport = withPermission(
 				recebeuNotificacao: (values as any).recebeuNotificacao || 'Não',
 				realizaSubcontratacaoIlegal:
 					(values as any).realizaSubcontratacaoIlegal || 'Não',
-				garantiaContratual: (values as any).garantiaContratual || 'Não Previsto',
+				garantiaContratual:
+					(values as any).garantiaContratual || 'Não Previsto',
 
 				// Restante dos campos (observações, etc)
 				item: (values as any).item,
@@ -244,7 +246,12 @@ export const createTransporteReport = withPermission(
 			select: { name: true, cidade: true, logo: true },
 		})
 
-		const brasaoPath = path.join(process.cwd(), 'public', 'imgs', 'Brasao.png')
+		const brasaoPath = path.join(
+			process.cwd(),
+			'public',
+			'images',
+			'Brasao.png',
+		)
 		let brasaoBase64 = ''
 		try {
 			const brasaoBuffer = fs.readFileSync(brasaoPath)

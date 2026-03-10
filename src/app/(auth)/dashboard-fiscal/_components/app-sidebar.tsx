@@ -39,14 +39,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 			<SidebarHeader>
 				<div className="flex items-center gap-2">
 					<Image
-						src="/imgs/logo.svg"
+						src="/images/logo.svg"
 						alt="Logo"
 						width={50}
 						height={50}
 						className="size-12"
 					/>
 					<div className="grid flex-1 text-left text-sm leading-tight">
-						<span className="truncate font-semibold">ST - Fiscalização e Relatórios</span>
+						<span className="truncate font-semibold">
+							ST - Fiscalização e Relatórios
+						</span>
 						<span className="truncate text-muted-foreground text-xs">
 							Dashboard Fiscal
 						</span>

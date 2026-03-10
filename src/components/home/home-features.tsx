@@ -18,65 +18,85 @@ const features = [
 		icon: IconSearch,
 		title: 'Fiscalização Ativa',
 		description:
-			'Registre ocorrências, notificações e relatórios de fiscalização de forma estruturada e rastreável.',
+			'Registre ocorrências, notificações e relatórios de forma estruturada, rastreável e auditável.',
 	},
 	{
 		icon: IconChartBar,
 		title: 'Relatórios e Indicadores',
 		description:
-			'Painéis e relatórios automáticos para acompanhamento do desempenho e conformidade contratual.',
+			'Painéis automáticos para acompanhamento de desempenho, prazos e conformidade contratual.',
 	},
 	{
 		icon: IconUsers,
 		title: 'Controle de Acesso',
 		description:
-			'Perfis por papel — gestores, fiscais e administradores — com permissões granulares por módulo.',
+			'Gestores, fiscais e administradores com permissões granulares e rastreabilidade de ações.',
 	},
 	{
 		icon: IconLock,
 		title: 'Segurança e Auditoria',
 		description:
-			'Registro completo de ações (audit log) e autenticação robusta para garantir conformidade.',
+			'Audit log completo de todas as ações e autenticação robusta para conformidade institucional.',
 	},
 	{
 		icon: IconBuildingBank,
 		title: 'Conformidade Legal',
 		description:
-			'Estruturado conforme as exigências da legislação vigente sobre fiscalização de contratos públicos.',
+			'Estruturado conforme a legislação vigente de fiscalização de contratos da administração pública.',
 	},
 ]
 
 export function HomeFeatures() {
 	return (
-		<section className="border-t border-border bg-secondary/20 py-24">
-			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-				<div className="mx-auto max-w-2xl text-center">
-					<h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-						Tudo que a gestão precisa
-					</h2>
-					<p className="mt-4 text-lg text-muted-foreground">
-						Ferramentas completas para cada etapa do ciclo de vida dos contratos.
+		<section id="recursos" className="py-32">
+			<div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-12">
+
+				{/* Header */}
+				<div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-end lg:gap-20 mb-20 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both">
+					<div>
+						<p className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4">
+							Funcionalidades
+						</p>
+						<h2 className="text-5xl font-black tracking-tight text-foreground leading-[1.08] sm:text-6xl">
+							Tudo que a gestão{' '}
+							<span className="text-primary">precisa.</span>
+						</h2>
+					</div>
+					<p className="text-lg leading-relaxed text-muted-foreground lg:mb-2">
+						Cada módulo foi pensado para o dia a dia da administração pública,
+						com foco em rastreabilidade, conformidade e facilidade de uso.
 					</p>
 				</div>
 
-				<div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-					{features.map((feature) => (
+				{/* Grid */}
+				<div className="grid grid-cols-1 gap-px rounded-2xl border border-border bg-border overflow-hidden sm:grid-cols-2 lg:grid-cols-3 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150 fill-mode-both">
+					{features.map((feature, i) => (
 						<div
 							key={feature.title}
-							className="group rounded-2xl border border-border bg-card p-6 transition-shadow hover:shadow-md hover:shadow-primary/8"
+							className="group relative flex flex-col gap-6 bg-card p-8 transition-all duration-300 hover:bg-primary/[0.03] dark:hover:bg-primary/[0.06]"
 						>
-							<div className="mb-4 flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary/15">
-								<feature.icon className="size-5" />
+							<span className="absolute right-6 top-6 text-xs font-bold tabular-nums text-border transition-colors duration-300 group-hover:text-primary/30">
+								{String(i + 1).padStart(2, '0')}
+							</span>
+
+							<div className="absolute bottom-0 left-0 right-0 h-0.5 scale-x-0 bg-primary transition-transform duration-300 origin-left group-hover:scale-x-100" />
+
+							<div className="flex size-14 items-center justify-center rounded-2xl border border-primary/15 bg-primary/8 text-primary transition-all duration-300 group-hover:border-primary/35 group-hover:bg-primary/15 group-hover:scale-110">
+								<feature.icon className="size-7" />
 							</div>
-							<h3 className="mb-2 font-semibold text-foreground">
-								{feature.title}
-							</h3>
-							<p className="text-sm leading-relaxed text-muted-foreground">
-								{feature.description}
-							</p>
+
+							<div>
+								<h3 className="text-lg font-bold text-foreground leading-snug mb-2.5">
+									{feature.title}
+								</h3>
+								<p className="text-base leading-relaxed text-muted-foreground">
+									{feature.description}
+								</p>
+							</div>
 						</div>
 					))}
 				</div>
+
 			</div>
 		</section>
 	)

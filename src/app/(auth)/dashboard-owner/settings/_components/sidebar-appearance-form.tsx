@@ -246,7 +246,7 @@ export function SidebarAppearanceForm({ orgId: _orgId, defaultValues }: Props) {
 									</div>
 								</FormControl>
 								<FormDescription>
-									PNG, JPG, SVG ou WebP · máx. 2MB · Prefira imagens quadradas
+									PNG, JPG, SVG ou WebP · máx. 2MB · Prefira images quadradas
 									(ex: 100×100px).
 								</FormDescription>
 								<FormMessage />

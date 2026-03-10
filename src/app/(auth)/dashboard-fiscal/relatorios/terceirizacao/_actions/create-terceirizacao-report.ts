@@ -6,12 +6,11 @@ import pdf from '@react-pdf/renderer'
 import qrcode from 'qrcode'
 import React from 'react'
 import type { z } from 'zod'
+import { withPermission } from '@/lib/permissions/with-permission'
 import { prisma } from '@/lib/prisma'
 import { simpleHash } from '@/utils/hash'
 import { ReportPdf } from '../_components/report-pdf'
 import { formSchemaTerceirizacao } from './action-schema'
-
-import { withPermission } from '@/lib/permissions/with-permission'
 
 export const createTerceirizacaoReport = withPermission(
 	'create',
@@ -20,7 +19,8 @@ export const createTerceirizacaoReport = withPermission(
 
 		// 3. Validar campos do formulário
 		const validatedFields = formSchemaTerceirizacao.safeParse(values)
-		if (!validatedFields.success) return { success: false, error: 'Campos inválidos.' }
+		if (!validatedFields.success)
+			return { success: false, error: 'Campos inválidos.' }
 
 		const baseData = validatedFields.data
 
@@ -130,20 +130,28 @@ export const createTerceirizacaoReport = withPermission(
 				contratoNumero: contract.displayContrato,
 				contratada: contract.contratado,
 				objeto: contract.objeto || baseData.objeto || 'Não informado',
-				
+
 				// Radio fields obrigatórios (Anexo XI)
-				manutencaoCondicoesHabilitacao: (values as any).manutencaoCondicoesHabilitacao || 'Sim',
-				certidaoDebitosFederais: (values as any).certidaoDebitosFederais || 'Sim',
-				certidaoDebitosEstadual: (values as any).certidaoDebitosEstadual || 'Sim',
-				certidaoDebitosMunicipal: (values as any).certidaoDebitosMunicipal || 'Sim',
-				certidaoRegularidadeFGTS: (values as any).certidaoRegularidadeFGTS || 'Sim',
-				certidaoNegativaDebitosTrabalhistas: (values as any).certidaoNegativaDebitosTrabalhistas || 'Sim',
+				manutencaoCondicoesHabilitacao:
+					(values as any).manutencaoCondicoesHabilitacao || 'Sim',
+				certidaoDebitosFederais:
+					(values as any).certidaoDebitosFederais || 'Sim',
+				certidaoDebitosEstadual:
+					(values as any).certidaoDebitosEstadual || 'Sim',
+				certidaoDebitosMunicipal:
+					(values as any).certidaoDebitosMunicipal || 'Sim',
+				certidaoRegularidadeFGTS:
+					(values as any).certidaoRegularidadeFGTS || 'Sim',
+				certidaoNegativaDebitosTrabalhistas:
+					(values as any).certidaoNegativaDebitosTrabalhistas || 'Sim',
 				cumprimentoObrigacoes: (values as any).cumprimentoObrigacoes || 'Sim',
 				atendeChamados: (values as any).atendeChamados || 'Sim',
 				prepostoAcessivel: (values as any).prepostoAcessivel || 'Sim',
 				recebeuNotificacao: (values as any).recebeuNotificacao || 'Não',
-				realizaSubcontratacaoIlegal: (values as any).realizaSubcontratacaoIlegal || 'Não',
-				garantiaContratual: (values as any).garantiaContratual || 'Não Previsto',
+				realizaSubcontratacaoIlegal:
+					(values as any).realizaSubcontratacaoIlegal || 'Não',
+				garantiaContratual:
+					(values as any).garantiaContratual || 'Não Previsto',
 
 				// Dados específicos Terceirização
 				houveDescoberturaPosto: (values as any).houveDescoberturaPosto || 'Não',
@@ -154,13 +162,16 @@ export const createTerceirizacaoReport = withPermission(
 				descontoMotivoNão: (values as any).descontoMotivoNão,
 
 				// Restante das Obs e Ocorrências
-				manutencaoCondicoesHabilitacaoObs: (values as any).manutencaoCondicoesHabilitacaoObs,
-				regularidadeFiscalTrabalhistaObs: (values as any).regularidadeFiscalTrabalhistaObs,
+				manutencaoCondicoesHabilitacaoObs: (values as any)
+					.manutencaoCondicoesHabilitacaoObs,
+				regularidadeFiscalTrabalhistaObs: (values as any)
+					.regularidadeFiscalTrabalhistaObs,
 				cumprimentoObrigacoesObs: (values as any).cumprimentoObrigacoesObs,
 				atendeChamadosObs: (values as any).atendeChamadosObs,
 				prepostoAcessivelObs: (values as any).prepostoAcessivelObs,
 				recebeuNotificacaoObs: (values as any).recebeuNotificacaoObs,
-				realizaSubcontratacaoIlegalObs: (values as any).realizaSubcontratacaoIlegalObs,
+				realizaSubcontratacaoIlegalObs: (values as any)
+					.realizaSubcontratacaoIlegalObs,
 				garantiaContratualObs: (values as any).garantiaContratualObs,
 				irregularidadesPendencias: (values as any).irregularidadesPendencias,
 				providenciasAdotadas: (values as any).providenciasAdotadas,
@@ -185,7 +196,12 @@ export const createTerceirizacaoReport = withPermission(
 		})
 
 		// 9. Carregar brasão para o PDF
-		const brasaoPath = path.join(process.cwd(), 'public', 'imgs', 'Brasao.png')
+		const brasaoPath = path.join(
+			process.cwd(),
+			'public',
+			'images',
+			'Brasao.png',
+		)
 		let brasaoBase64 = ''
 		try {
 			const buf = fs.readFileSync(brasaoPath)
@@ -232,8 +248,10 @@ export const createTerceirizacaoReport = withPermission(
 		if (!pdfStream) return { success: false, error: 'Falha ao gerar o PDF.' }
 
 		// 13. Salvar arquivo
-		const reportsDir = process.env.REPORTS_DIR || path.join(process.cwd(), 'public', 'reports')
-		if (!fs.existsSync(reportsDir)) fs.mkdirSync(reportsDir, { recursive: true })
+		const reportsDir =
+			process.env.REPORTS_DIR || path.join(process.cwd(), 'public', 'reports')
+		if (!fs.existsSync(reportsDir))
+			fs.mkdirSync(reportsDir, { recursive: true })
 
 		const filePath = path.join(reportsDir, `${newProtocol}.pdf`)
 		const writeStream = fs.createWriteStream(filePath)

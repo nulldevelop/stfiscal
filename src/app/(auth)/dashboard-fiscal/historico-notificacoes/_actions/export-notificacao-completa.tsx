@@ -72,7 +72,7 @@ export async function exportNotificacaoCompleta(
 
 		const historicosRaw = (historicosRes.data || []) as HistoricoItem[]
 
-		// Processar apenas IMAGENS para o componente React-PDF
+		// Processar apenas images para o componente React-PDF
 		const historicos = await Promise.all(
 			historicosRaw.map(async (h) => {
 				const processedImages = await processImageAttachment(h.anexoPath)
@@ -83,7 +83,7 @@ export async function exportNotificacaoCompleta(
 			}),
 		)
 
-		// 1. Gerar o PDF BASE (Relatório + Imagens)
+		// 1. Gerar o PDF BASE (Relatório + images)
 		const basePdfBuffer = await renderToBuffer(
 			<CompleteNotificationPdf
 				notification={notification}

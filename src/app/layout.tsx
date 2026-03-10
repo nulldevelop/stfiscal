@@ -19,10 +19,10 @@ export const metadata: Metadata = {
 	title: 'ST - Fiscalização e Relatórios',
 	description: 'ST - Fiscalização e Relatórios',
 	openGraph: {
-		images: '/imgs/logo.svg',
+		images: '/images/logo.svg',
 	},
 	icons: {
-		icon: '/imgs/logo.svg',
+		icon: '/images/logo.svg',
 	},
 }
 
@@ -33,11 +33,18 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="pt-BR" suppressHydrationWarning>
-			<body className={`${geistSans.variable} ${geistMono.variable} text-foreground`}>
+			<body
+				className={`${geistSans.variable} ${geistMono.variable} text-foreground`}
+			>
 				<ThemeProvider>
 					<Providers>
 						{children}
-						<Toaster duration={2000} position="top-right" richColors closeButton />
+						<Toaster
+							duration={2000}
+							position="top-right"
+							richColors
+							closeButton
+						/>
 					</Providers>
 				</ThemeProvider>
 			</body>

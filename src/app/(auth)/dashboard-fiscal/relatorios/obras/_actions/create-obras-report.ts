@@ -8,12 +8,11 @@ import React from 'react'
 import type { z } from 'zod'
 import { Prisma } from '@/generated/prisma/client'
 import { getCurrentOrganizationId, getSession } from '@/lib/auth-actions'
+import { withPermission } from '@/lib/permissions/with-permission'
 import { prisma } from '@/lib/prisma'
 import { simpleHash } from '@/utils/hash'
 import { ReportPdf } from '../_components/report-pdf'
 import { formSchemaObras } from './action-schema'
-
-import { withPermission } from '@/lib/permissions/with-permission'
 
 export const createObrasReport = withPermission(
 	'create',
@@ -201,7 +200,8 @@ export const createObrasReport = withPermission(
 					(values as any).contratadaEncaminhaDocumentacaoSubcontratada ||
 					'Não se aplica',
 				houveAditivo: (values as any).houveAditivo || 'Não',
-				garantiaContratual: (values as any).garantiaContratual || 'Não Previsto',
+				garantiaContratual:
+					(values as any).garantiaContratual || 'Não Previsto',
 
 				// Restante dos campos (observações, etc)
 				manutencaoHabitacaoFiscalTrabalhistaObs: (values as any)
@@ -210,9 +210,11 @@ export const createObrasReport = withPermission(
 				controlePrazoExecucaoObs: (values as any).controlePrazoExecucaoObs,
 				controleQualidadeMateriaisObs: (values as any)
 					.controleQualidadeMateriaisObs,
-				controleQualidadeProjetoObs: (values as any).controleQualidadeProjetoObs,
+				controleQualidadeProjetoObs: (values as any)
+					.controleQualidadeProjetoObs,
 				controlePrevistoPercentual: (values as any).controlePrevistoPercentual,
-				controleExecutadoPercentual: (values as any).controleExecutadoPercentual,
+				controleExecutadoPercentual: (values as any)
+					.controleExecutadoPercentual,
 				controleControleQuantidadeObs: (values as any)
 					.controleControleQuantidadeObs,
 				comprimentoObrigacoesContratoObs: (values as any)
@@ -408,7 +410,12 @@ export const createObrasReport = withPermission(
 		}
 
 		// 11. Carregar brasão
-		const brasaoPath = path.join(process.cwd(), 'public', 'imgs', 'Brasao.png')
+		const brasaoPath = path.join(
+			process.cwd(),
+			'public',
+			'images',
+			'Brasao.png',
+		)
 		let brasaoBase64 = ''
 		try {
 			const brasaoBuffer = fs.readFileSync(brasaoPath)

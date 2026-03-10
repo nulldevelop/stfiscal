@@ -19,7 +19,7 @@ import type {
 	Notificacoes,
 } from '@/generated/prisma/client'
 
-const logoPath = path.join(process.cwd(), 'public/imgs', 'LogoHorizontal.png')
+const logoPath = path.join(process.cwd(), 'public/images', 'LogoHorizontal.png')
 const logoImage = fs.existsSync(logoPath)
 	? fs.readFileSync(logoPath).toString('base64')
 	: ''
