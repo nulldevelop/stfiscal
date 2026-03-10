@@ -4,7 +4,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
 }
 
 // ===============================================
@@ -13,7 +13,7 @@ datasource db {
 
 model Cache {
   key       String    @id @unique
-  value     String    @db.MediumText
+  value     String    @db.Text
   updatedAt DateTime
   expiresAt DateTime?
 }
@@ -249,7 +249,7 @@ model Member {
   setoriaisContratos       ContratoSetorial[]
 
   @@unique([userId, organizationId])
-  @@index([organizationId], map: "member_organizationId_fkey")
+  @@index([organizationId], map: "member_organizationId_idx")
   @@map("member")
 }
 
@@ -551,7 +551,7 @@ model BensEServicosReport {
   providenciasAdotadas                            String?        @db.Text
   resultados                                      String?        @db.Text
   informacoesAdicionais                           String?        @db.Text
-  dynamicData                                     String?        @db.LongText // JSON de campos dinâmicos
+  dynamicData                                     String?        @db.Text // JSON de campos dinâmicos
   protocolo                                       String
   assinaturaDigital                               String         @unique
   fiscalContratoId                                String
@@ -627,7 +627,7 @@ model TransporteReport {
   protocolo                                       String
   assinaturaDigital                               String         @unique
   informacoesAdicionais                           String?        @db.Text
-  dynamicData                                     String?        @db.LongText
+  dynamicData                                     String?        @db.Text
 }
 
 model ObrasReport {
@@ -702,7 +702,7 @@ model ObrasReport {
   contratoId                                      String?
   contrato                                        Contrato?      @relation(fields: [contratoId], references: [id])
   informacoesAdicionais                           String?        @db.Text
-  dynamicData                                     String?        @db.LongText
+  dynamicData                                     String?        @db.Text
 }
 
 model FiscalPrincipalReport {
@@ -722,10 +722,10 @@ model FiscalPrincipalReport {
   periodoAnalisadoFim       DateTime
   contratada                String
   objeto                    String         @db.Text
-  atosDeFormato             String?        @db.LongText // JSON: [{num: number, data: string}]
-  medidasAdotadas           String?        @db.LongText // JSON: [{num: number, irregularidade: string, medidasAdotadas: string}]
+  atosDeFormato             String?        @db.Text // JSON: [{num: number, data: string}]
+  medidasAdotadas           String?        @db.Text // JSON: [{num: number, irregularidade: string, medidasAdotadas: string}]
   demaisInformacoes         String?        @db.Text
-  dynamicData               String?        @db.LongText // JSON de campos dinâmicos
+  dynamicData               String?        @db.Text // JSON de campos dinâmicos
   protocolo                 String
   assinaturaDigital         String         @unique
   createdAt                 DateTime       @default(now())
@@ -808,7 +808,7 @@ model TerceirizacaoReport {
   providenciasAdotadas                            String?        @db.Text
   resultados                                      String?        @db.Text
 
-  dynamicData                                     String?        @db.LongText
+  dynamicData                                     String?        @db.Text
   protocolo                                       String
   assinaturaDigital                               String         @unique
   createdAt                                       DateTime       @default(now())
@@ -1090,8 +1090,8 @@ model AuditLog {
   userEmail      String       @db.Text
   organizationId String
   description    String?      @db.Text
-  before         String?      @db.LongText
-  after          String?      @db.LongText
+  before         String?      @db.Text
+  after          String?      @db.Text
   createdAt      DateTime     @default(now())
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
@@ -1117,7 +1117,7 @@ model ApiSyncLog {
 model SystemUpdate {
   id             String       @id @default(cuid())
   title          String       @db.Text
-  description    String       @db.LongText
+  description    String       @db.Text
   version        String?      @db.VarChar(20)
   isActive       Boolean      @default(true)
   targetRoles    String?      @db.Text
@@ -1136,7 +1136,7 @@ model FormConfig {
   label              String       @db.Text
   description        String?      @db.Text
   type               String
-  options            String?      @db.TinyText
+  options            String?      @db.Text
   isRequired         Boolean      @default(false)
   isVisiblePrincipal Boolean      @default(true)
   isVisibleSetorial  Boolean      @default(true)

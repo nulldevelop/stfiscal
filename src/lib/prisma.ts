@@ -1,28 +1,18 @@
 import 'dotenv/config'
-import { PrismaMariaDb } from '@prisma/adapter-mariadb'
+import { PrismaPg } from '@prisma/adapter-pg'
 import { PrismaClient } from '../generated/prisma/client'
 
 const globalForPrisma = globalThis as unknown as {
-	adapter?: PrismaMariaDb
+	adapter?: PrismaPg
 	prisma?: PrismaClient
 }
 
 function createAdapter() {
-	return new PrismaMariaDb({
-		host: process.env.DATABASE_HOST,
-		port: Number.parseInt(process.env.DATABASE_PORT || '3306', 10),
-		user: process.env.DATABASE_USER,
-		password: process.env.DATABASE_PASSWORD,
-		database: process.env.DATABASE_NAME,
-		connectionLimit: process.env.DATABASE_CONNECTION_LIMIT
+	return new PrismaPg({
+		connectionString: process.env.DATABASE_URL,
+		max: process.env.DATABASE_CONNECTION_LIMIT
 			? Number.parseInt(process.env.DATABASE_CONNECTION_LIMIT, 10)
 			: 10,
-		connectTimeout: process.env.DATABASE_CONNECT_TIMEOUT
-			? Number.parseInt(process.env.DATABASE_CONNECT_TIMEOUT, 10)
-			: 100000,
-		acquireTimeout: process.env.DATABASE_CONNECT_TIMEOUT
-			? Number.parseInt(process.env.DATABASE_CONNECT_TIMEOUT, 10)
-			: 100000,
 	})
 }
 

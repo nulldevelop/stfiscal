@@ -2,7 +2,7 @@ import { prisma } from '@/lib/prisma'
 import type { EmpenhoOxy } from '../api/oxy-api'
 
 // 13 colunas de dados + 3 fixas (origem, createdAt, updatedAt) = 16 por linha
-// MySQL max params: 65535 → 65535 / 13 ≈ 5041; usando 2000 com margem segura
+// PostgreSQL max params: 65535 → 65535 / 13 ≈ 5041; usando 2000 com margem segura
 const BATCH_SIZE = 2000
 
 type EmpenhoRow = {
