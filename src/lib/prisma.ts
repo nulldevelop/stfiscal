@@ -1,3 +1,4 @@
+
 import 'dotenv/config'
 import { PrismaMariaDb } from '@prisma/adapter-mariadb'
 import { PrismaClient } from '../generated/prisma/client'
@@ -19,7 +20,10 @@ function createAdapter() {
 			: 10,
 		connectTimeout: process.env.DATABASE_CONNECT_TIMEOUT
 			? Number.parseInt(process.env.DATABASE_CONNECT_TIMEOUT, 10)
-			: 10000,
+			: 20000,
+		acquireTimeout: process.env.DATABASE_CONNECT_TIMEOUT
+			? Number.parseInt(process.env.DATABASE_CONNECT_TIMEOUT, 10)
+			: 20000,
 	})
 }
 

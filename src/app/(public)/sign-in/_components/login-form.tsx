@@ -8,8 +8,18 @@ import { useRouter } from 'next/navigation'
 import { useMutation } from '@tanstack/react-query'
 import { useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { BackButton } from '@/components/shared/back-button'
 import { cpfLookupAction } from '../_actions/cpf-signin'
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import {
 	Form,
@@ -65,6 +75,7 @@ export function LoginForm() {
 	const [method, setMethod] = useState<Method>('email')
 	const [showPassword, setShowPassword] = useState(false)
 	const [serverError, setServerError] = useState<string | null>(null)
+	const [govDialogOpen, setGovDialogOpen] = useState(false)
 
 	const methodRef = useRef(method)
 	methodRef.current = method
@@ -136,6 +147,16 @@ export function LoginForm() {
 		} else {
 			router.push('/auth/callback')
 		}
+	}
+
+	function handleGoogleSignIn() {
+		toast.info('Redirecionando para o Google...', { duration: 3000 })
+		signInGoogle()
+	}
+
+	function handleMicrosoftSignIn() {
+		toast.info('Redirecionando para a Microsoft...', { duration: 3000 })
+		signInMicrosoft()
 	}
 
 	const currentMethod = methods.find((m) => m.key === method) ?? methods[0]
@@ -298,6 +319,7 @@ export function LoginForm() {
 					<Button
 						type="button"
 						variant="outline"
+						onClick={() => setGovDialogOpen(true)}
 						disabled={isPending}
 						className="h-10 rounded-lg border-border bg-secondary text-sm font-medium text-foreground hover:bg-secondary/80"
 					>
@@ -313,7 +335,7 @@ export function LoginForm() {
 					<Button
 						type="button"
 						variant="outline"
-						onClick={signInGoogle}
+						onClick={handleGoogleSignIn}
 						disabled={isPending}
 						className="h-10 rounded-lg border-border bg-secondary text-sm font-medium text-foreground hover:bg-secondary/80"
 					>
@@ -345,7 +367,7 @@ export function LoginForm() {
 					<Button
 						type="button"
 						variant="outline"
-						onClick={signInMicrosoft}
+						onClick={handleMicrosoftSignIn}
 						disabled={isPending}
 						className="h-10 rounded-lg border-border bg-secondary text-sm font-medium text-foreground hover:bg-secondary/80"
 					>
@@ -363,6 +385,24 @@ export function LoginForm() {
 					</Button>
 				</div>
 			</div>
+
+			<AlertDialog open={govDialogOpen} onOpenChange={setGovDialogOpen}>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>Em implementação</AlertDialogTitle>
+						<AlertDialogDescription>
+							O login com Gov.br ainda está em implementação e estará
+							disponível em breve. Por enquanto, utilize e-mail, username ou
+							CPF para acessar sua conta.
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogAction onClick={() => setGovDialogOpen(false)}>
+							Entendido
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 		</div>
 	)
 }
