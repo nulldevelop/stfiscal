@@ -4,7 +4,6 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev",
-		"prebuild": "git pull && prisma generate && prisma migrate deploy",
 		"build": "next build",
 		"start": "next start",
 		"test": "vitest",
