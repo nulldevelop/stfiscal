@@ -3,57 +3,44 @@ import { ThemeToggle } from './theme-toggle'
 
 export function HomeNav() {
 	return (
-		<header className="sticky top-0 z-50 animate-in fade-in slide-in-from-top-2 duration-500 fill-mode-both">
-			<div className="h-[3px] bg-linear-to-r from-primary/40 via-primary to-primary/40" />
-
-			<nav className="border-b border-border/50 bg-background/90 backdrop-blur-xl">
-				<div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 sm:px-10 lg:px-12">
-
-					<Link href="/" className="group flex items-center gap-4">
-						<div className="relative flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-primary">
-							<span className="text-sm font-black tracking-tight text-white">ST</span>
-							<div className="absolute inset-0 bg-white/0 transition-colors duration-200 group-hover:bg-white/10" />
-						</div>
-						<div className="hidden sm:block">
-							<p className="text-base font-bold leading-none tracking-wide text-foreground">
-								Sistema de Fiscalização
-							</p>
-							<p className="mt-1 text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
-								Contratos Públicos
-							</p>
-						</div>
-					</Link>
-
-					<div className="flex items-center gap-3">
-						<div className="hidden items-center gap-1 sm:flex">
-							<Link
-								href="#recursos"
-								className="rounded-lg px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-							>
-								Recursos
-							</Link>
-							<Link
-								href="#sobre"
-								className="rounded-lg px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-							>
-								Sobre
-							</Link>
-						</div>
-
-						<div className="mx-1 hidden h-5 w-px bg-border sm:block" />
-
-						<ThemeToggle />
-
-						<Link
-							href="/sign-in"
-							className="ml-1 inline-flex h-10 items-center rounded-xl bg-primary px-6 text-sm font-semibold text-white shadow-md shadow-primary/25 transition-all duration-200 hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/30 active:scale-[0.97]"
-						>
-							Acessar sistema
-						</Link>
+		<div className="fixed left-0 right-0 top-0 z-50 mt-6 flex justify-center px-4 pointer-events-none animate-in fade-in slide-in-from-top-4 duration-700">
+			<nav className="pointer-events-auto flex h-14 items-center justify-between gap-6 rounded-full border border-border/40 bg-background/60 px-4 pr-2 backdrop-blur-xl shadow-lg shadow-black/5 dark:shadow-black/20">
+				
+				{/* Logo */}
+				<Link href="/" className="group flex items-center gap-2.5 pl-2">
+					<div className="flex size-7 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-inner transition-transform group-hover:scale-105">
+						<span className="font-display text-xs font-bold">ST</span>
 					</div>
+					<span className="font-display text-sm font-semibold tracking-tight text-foreground">
+						Fiscalização
+					</span>
+				</Link>
 
+				{/* Links */}
+				<div className="hidden sm:flex items-center gap-1">
+					{[{ label: 'Recursos', href: '#recursos' }, { label: 'Sobre', href: '#sobre' }].map((item) => (
+						<Link
+							key={item.label}
+							href={item.href}
+							className="rounded-full px-4 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+						>
+							{item.label}
+						</Link>
+					))}
 				</div>
+
+				{/* Actions */}
+				<div className="flex items-center gap-2 pl-2 sm:border-l sm:border-border/50">
+					<ThemeToggle />
+					<Link
+						href="/sign-in"
+						className="inline-flex h-9 items-center justify-center rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground shadow-sm transition-all hover:bg-primary/90 hover:scale-[1.02] active:scale-95"
+					>
+						Acessar
+					</Link>
+				</div>
+
 			</nav>
-		</header>
+		</div>
 	)
 }

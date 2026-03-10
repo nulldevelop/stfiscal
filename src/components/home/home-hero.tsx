@@ -1,142 +1,176 @@
 import Link from 'next/link'
 import {
 	IconArrowRight,
-	IconShieldCheck,
-	IconTrendingUp,
-	IconAlertCircle,
+	IconShieldCheckFilled,
+	IconBriefcase,
 	IconFileText,
+	IconCircleCheck,
+	IconEye,
+	IconChevronRight,
 } from '@tabler/icons-react'
 
 const metrics = [
-	{ icon: IconFileText,    value: '142', label: 'Contratos ativos',   trend: '+12 este mês' },
-	{ icon: IconShieldCheck, value: '94%', label: 'Conformidade geral', trend: '↑ 3% vs. mês anterior' },
-	{ icon: IconAlertCircle, value: '7',   label: 'Pendências abertas', trend: 'Requer atenção' },
-	{ icon: IconTrendingUp,  value: '38',  label: 'Em fiscalização',    trend: 'Dentro do prazo' },
+	{
+		icon: IconBriefcase,
+		value: '142',
+		label: 'Contratos',
+		description: 'Sob fiscalização',
+		color: 'from-green-500/20',
+		iconColor: 'text-green-600 dark:text-green-500',
+		iconBg: 'bg-green-500/15',
+	},
+	{
+		icon: IconFileText,
+		value: '28',
+		label: 'Relatórios',
+		description: 'Enviados este mês',
+		color: 'from-blue-500/20',
+		iconColor: 'text-blue-600 dark:text-blue-500',
+		iconBg: 'bg-blue-500/15',
+	},
+	{
+		icon: IconCircleCheck,
+		value: 'Regular',
+		label: 'Status Geral',
+		description: 'Tudo em dia',
+		color: 'from-purple-500/20',
+		iconColor: 'text-purple-600 dark:text-purple-500',
+		iconBg: 'bg-purple-500/15',
+	},
+]
+
+const contracts = [
+	{
+		numero: '124/2024',
+		contratado: 'Construtora Alpha Ltda',
+		status: 'ok',
+		label: 'Em dia',
+	},
+	{
+		numero: '089/2024',
+		contratado: 'Tech Solutions S.A.',
+		status: 'warning',
+		label: 'Pendente',
+	},
 ]
 
 export function HomeHero() {
 	return (
-		<section className="relative min-h-[calc(100vh-5rem)] overflow-hidden">
-			{/* Malha de pontos */}
-			<div className="absolute inset-0 -z-10 bg-[radial-gradient(circle,oklch(0.88_0_0)_1px,transparent_1px)] bg-[size:32px_32px] opacity-50 dark:bg-[radial-gradient(circle,oklch(0.28_0_0)_1px,transparent_1px)] dark:opacity-30" />
-			<div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_60%_at_60%_-10%,oklch(0.707_0.165_254.6/0.10),transparent_70%)]" />
-			<div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_40%_40%_at_5%_80%,oklch(0.707_0.165_254.6/0.06),transparent_70%)]" />
+		<section className="relative overflow-hidden bg-background px-6 pt-32 pb-20 sm:pt-40 sm:pb-32 lg:pt-48">
+			{/* Glow de fundo posicionado à esquerda */}
+			<div className="absolute left-0 top-0 -translate-x-1/4 -translate-y-1/4 w-[800px] h-[600px] bg-primary/15 blur-[120px] rounded-full pointer-events-none opacity-50" />
 
-			<div className="mx-auto grid max-w-7xl grid-cols-1 gap-16 px-6 py-24 sm:px-10 lg:grid-cols-2 lg:items-center lg:gap-16 lg:px-12 lg:py-32">
+			{/* Grid de fundo */}
+			<div className="absolute inset-0 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-[size:3rem_3rem] [mask-image:radial-gradient(ellipse_60%_50%_at_20%_30%,#000_60%,transparent_100%)] opacity-[0.1]" />
 
-				{/* Esquerda — copy */}
-				<div className="animate-in fade-in slide-in-from-bottom-6 duration-700 fill-mode-both">
-					<div className="mb-8 inline-flex items-center gap-2.5 rounded-full border border-primary/20 bg-primary/8 px-4 py-2 text-xs font-semibold uppercase tracking-[0.15em] text-primary">
-						<span className="relative flex size-2">
-							<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
-							<span className="relative inline-flex size-2 rounded-full bg-primary" />
-						</span>
-						Gestão Pública Moderna
-					</div>
+			<div className="mx-auto max-w-7xl">
+				<div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2 lg:gap-8">
 
-					<h1 className="text-5xl font-black leading-[1.06] tracking-[-0.025em] text-foreground sm:text-6xl lg:text-[4rem]">
-						Fiscalização de{' '}
-						<br />
-						contratos públicos{' '}
-						<br />
-						<span className="text-primary">sem complicação.</span>
-					</h1>
+					{/* Conteúdo à Esquerda */}
+					<div className="relative z-10 flex flex-col items-start text-left animate-in fade-in slide-in-from-left-8 duration-1000 fill-mode-both">
 
-					<p className="mt-7 max-w-lg text-lg leading-[1.75] text-muted-foreground">
-						Plataforma integrada para gestão, acompanhamento e fiscalização
-						de contratos. Transparência total e conformidade legal em cada etapa.
-					</p>
-
-					<div className="mt-10 flex flex-wrap gap-4">
-						<Link
-							href="/sign-in"
-							className="group inline-flex h-13 items-center gap-2.5 rounded-xl bg-primary px-8 text-base font-bold text-white shadow-lg shadow-primary/25 transition-all duration-200 hover:bg-primary/90 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-px active:scale-[0.97]"
-						>
-							Acessar o sistema
-							<IconArrowRight className="size-5 transition-transform duration-200 group-hover:translate-x-0.5" />
-						</Link>
-						<Link
-							href="#recursos"
-							className="inline-flex h-13 items-center rounded-xl border border-border px-8 text-base font-semibold text-foreground transition-all duration-200 hover:border-primary/40 hover:bg-primary/6 hover:text-primary hover:-translate-y-px active:scale-[0.97]"
-						>
-							Ver recursos
-						</Link>
-					</div>
-
-					<div className="mt-10 flex flex-wrap gap-x-8 gap-y-3">
-						{['Dados protegidos', 'Auditoria completa', 'Conforme legislação'].map((item) => (
-							<span key={item} className="flex items-center gap-2 text-sm text-muted-foreground">
-								<IconShieldCheck className="size-4 shrink-0 text-primary/70" />
-								{item}
+						{/* Badge Compacta */}
+						<div className="mb-6 flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.15em] text-primary backdrop-blur-md animate-in fade-in zoom-in-95 duration-1000 delay-200 fill-mode-both">
+							<span className="relative flex size-1.5">
+								<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
+								<span className="relative inline-flex size-1.5 rounded-full bg-primary" />
 							</span>
-						))}
+							Plataforma de Nova Geração
+						</div>
+
+						{/* Headline Ajustada */}
+						<h1 className="font-display text-4xl font-extrabold tracking-tight text-foreground sm:text-6xl lg:text-7xl leading-[1.1] animate-in fade-in slide-in-from-left-8 duration-1000 delay-300 fill-mode-both">
+							Fiscalização de contratos{' '}
+							<span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-primary/60">
+								sem burocracia.
+							</span>
+						</h1>
+
+						{/* Subheadline Ajustada */}
+						<p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg animate-in fade-in slide-in-from-left-8 duration-1000 delay-500 fill-mode-both">
+							Sistema integrado para gestão, acompanhamento e fiscalização
+							de contratos públicos. Tenha total transparência e conformidade em cada etapa do processo administrativo.
+						</p>
+
+						{/* Botões Compactos */}
+						<div className="mt-8 flex items-center gap-3 animate-in fade-in slide-in-from-left-8 duration-1000 delay-700 fill-mode-both">
+							<Link
+								href="/sign-in"
+								className="group flex h-11 items-center gap-2 rounded-full bg-primary px-6 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/25 transition-all duration-300 hover:bg-primary/90 hover:scale-[1.02] active:scale-95"
+							>
+								Acessar sistema
+								<IconArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
+							</Link>
+							<Link
+								href="#recursos"
+								className="flex h-11 items-center rounded-full border border-border bg-card/50 px-6 text-sm font-semibold text-foreground backdrop-blur-md transition-all duration-300 hover:bg-accent active:scale-95"
+							>
+								Recursos
+							</Link>
+						</div>
 					</div>
-				</div>
 
-				{/* Direita — painel */}
-				<div className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200 fill-mode-both">
-					<div className="relative">
-						<div className="absolute -inset-6 rounded-3xl bg-primary/5 blur-3xl dark:bg-primary/10" />
+					{/* Mockup do Dashboard à Direita */}
+					<div className="relative w-full animate-in fade-in slide-in-from-right-8 zoom-in-95 duration-1000 delay-1000 fill-mode-both scale-100 lg:scale-110 origin-center lg:origin-left">
+						<div className="absolute inset-x-10 bottom-0 top-10 rounded-3xl bg-linear-to-b from-primary/5 to-transparent blur-3xl" />
 
-						<div className="relative overflow-hidden rounded-2xl border border-border bg-card shadow-2xl shadow-black/10 dark:shadow-black/30">
-							{/* Header */}
-							<div className="flex items-center justify-between border-b border-border bg-muted/40 px-6 py-4">
-								<div className="flex items-center gap-2.5">
-									<div className="size-2.5 rounded-full bg-primary" />
-									<span className="text-sm font-semibold text-foreground">
-										Dashboard — Fiscalização
-									</span>
+						<div className="relative rounded-xl border border-border/60 bg-card/80 backdrop-blur-2xl shadow-2xl shadow-black/10 overflow-hidden ring-1 ring-white/5">
+
+							{/* Header do Mockup */}
+							<div className="flex items-center gap-3 border-b border-border/40 bg-muted/20 px-4 py-2">
+								<div className="flex gap-1.2">
+									<div className="size-2 rounded-full bg-red-400/60" />
+									<div className="size-2 rounded-full bg-yellow-400/60" />
+									<div className="size-2 rounded-full bg-green-400/60" />
 								</div>
-								<span className="rounded-md bg-primary/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-primary">
-									Ao vivo
-								</span>
-							</div>
-
-							{/* URL bar */}
-							<div className="border-b border-border/50 bg-muted/20 px-6 py-2.5">
-								<div className="flex h-7 items-center gap-2 rounded-md border border-border/60 bg-background px-3">
-									<div className="size-2 rounded-full bg-green-400" />
-									<span className="text-xs text-muted-foreground">
-										stfiscal.gov.br/dashboard
+								<div className="flex h-5 flex-1 items-center justify-center rounded bg-background/40 max-w-40 mx-auto shadow-inner border border-border/20">
+									<span className="text-[8px] font-medium text-muted-foreground/60 flex items-center gap-1">
+										<IconShieldCheckFilled className="size-2 text-green-500/50" />
+										stfiscal.gov.br
 									</span>
 								</div>
 							</div>
 
-							{/* Métricas */}
-							<div className="grid grid-cols-2 divide-x divide-y divide-border">
-								{metrics.map((m) => (
-									<div key={m.label} className="group flex flex-col gap-4 p-6 transition-colors hover:bg-primary/4">
-										<div className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary/20">
-											<m.icon className="size-5" />
+							{/* Conteúdo do Mockup */}
+							<div className="p-4 sm:p-5">
+								{/* Métricas Compactas */}
+								<div className="grid grid-cols-3 gap-2.5 mb-5">
+									{metrics.map((m) => (
+										<div key={m.label} className={`rounded-lg border border-border/40 p-2.5 bg-linear-to-br ${m.color} via-transparent to-transparent shadow-sm`}>
+											<div className="flex items-center justify-between mb-1.5">
+												<p className="text-[7px] font-bold uppercase tracking-wider text-muted-foreground/80">{m.label}</p>
+												<m.icon className={`size-3 ${m.iconColor}`} />
+											</div>
+											<p className="text-base font-bold tabular-nums text-foreground">{m.value}</p>
 										</div>
-										<div>
-											<p className="text-3xl font-black tabular-nums tracking-tight text-foreground transition-transform duration-200 group-hover:scale-105 origin-left">
-												{m.value}
-											</p>
-											<p className="mt-1 text-sm font-medium text-muted-foreground">
-												{m.label}
-											</p>
-											<p className="mt-1 text-xs text-primary/70">
-												{m.trend}
-											</p>
-										</div>
-									</div>
-								))}
-							</div>
+									))}
+								</div>
 
-							{/* Footer */}
-							<div className="border-t border-border bg-muted/20 px-6 py-3.5">
-								<p className="text-xs text-muted-foreground">
-									Atualizado agora mesmo · Dados em tempo real
-								</p>
+								{/* Lista Compacta */}
+								<div className="flex flex-col gap-2.5">
+									{contracts.map((c) => (
+										<div key={c.numero} className="rounded-lg border border-border/40 bg-background/40 p-2.5 shadow-sm flex flex-col gap-1.5">
+											<div className="flex items-center justify-between">
+												<p className="text-[7px] font-bold uppercase tracking-wider text-muted-foreground/80">Contrato {c.numero}</p>
+												<span className={`rounded px-1.5 py-0.5 text-[7px] font-bold uppercase ${
+													c.status === 'ok' ? 'bg-secondary text-secondary-foreground' : 'bg-destructive/10 text-destructive'
+												}`}>
+													{c.label}
+												</span>
+											</div>
+											<p className="text-[10px] font-semibold text-foreground line-clamp-1">{c.contratado}</p>
+											<div className="flex h-6 items-center justify-between rounded border border-border px-2 text-[8px] font-bold text-muted-foreground bg-card/50">
+												Gerenciar
+												<IconChevronRight className="size-2.5" />
+											</div>
+										</div>
+									))}
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-
 			</div>
-
-			<div className="absolute bottom-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-border to-transparent" />
 		</section>
 	)
 }

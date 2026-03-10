@@ -1,6 +1,7 @@
 import Link from 'next/link'
+import { IconShieldCheckFilled } from '@tabler/icons-react'
 
-const links = [
+const nav = [
 	{ label: 'Recursos', href: '#recursos' },
 	{ label: 'Sobre', href: '#sobre' },
 	{ label: 'Acessar', href: '/sign-in' },
@@ -8,30 +9,31 @@ const links = [
 
 export function HomeFooter() {
 	return (
-		<footer className="border-t border-border">
-			<div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-12">
+		<footer className="bg-slate-950">
+			<div className="mx-auto max-w-5xl px-6">
+				
+				{/* Divisor superior sutil */}
+				<div className="h-px w-full bg-linear-to-r from-transparent via-white/10 to-transparent" />
 
-				<div className="flex flex-col items-center justify-between gap-6 py-10 sm:flex-row">
-					<Link href="/" className="group flex items-center gap-3.5">
-						<div className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 transition-colors group-hover:bg-primary/15">
-							<span className="text-sm font-black text-primary">ST</span>
+				<div className="flex flex-col items-center justify-between gap-8 py-12 sm:flex-row">
+					
+					{/* Logo */}
+					<Link href="/" className="group flex items-center gap-3">
+						<div className="flex size-9 items-center justify-center rounded-lg bg-white/10 text-white transition-transform group-hover:scale-105">
+							<span className="font-display text-xs font-bold">ST</span>
 						</div>
-						<div>
-							<p className="text-sm font-bold leading-none tracking-wide text-foreground">
-								Sistema de Fiscalização
-							</p>
-							<p className="mt-1 text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
-								Contratos Públicos
-							</p>
-						</div>
+						<span className="font-display text-sm font-semibold tracking-tight text-white/90">
+							Fiscalização
+						</span>
 					</Link>
 
-					<nav className="flex items-center gap-1">
-						{links.map((link) => (
+					{/* Links */}
+					<nav className="flex items-center gap-6">
+						{nav.map((link) => (
 							<Link
 								key={link.label}
 								href={link.href}
-								className="rounded-lg px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+								className="text-sm font-medium text-white/50 transition-colors hover:text-white"
 							>
 								{link.label}
 							</Link>
@@ -39,13 +41,14 @@ export function HomeFooter() {
 					</nav>
 				</div>
 
-				<div className="border-t border-border py-6 flex flex-col items-center justify-between gap-2 sm:flex-row">
-					<p className="text-sm text-muted-foreground">
+				<div className="flex flex-col items-center justify-between gap-4 border-t border-white/5 pb-12 pt-8 sm:flex-row">
+					<p className="text-xs text-white/40">
 						© {new Date().getFullYear()} ST — Fiscalização de Contratos. Todos os direitos reservados.
 					</p>
-					<p className="text-sm text-muted-foreground">
-						Uso restrito a servidores autorizados
-					</p>
+					<div className="flex items-center gap-1.5 text-xs font-medium text-white/30">
+						<IconShieldCheckFilled className="size-3.5" />
+						Uso institucional
+					</div>
 				</div>
 
 			</div>

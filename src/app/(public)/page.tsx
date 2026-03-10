@@ -6,9 +6,9 @@ import { HomeNav } from '@/components/home/home-nav'
 
 export default function Home() {
 	return (
-		<div className="flex min-h-screen flex-col bg-background">
+		<div className="relative min-h-screen bg-background">
 			<HomeNav />
-			<main className="flex-1">
+			<main>
 				<HomeHero />
 				<HomeFeatures />
 				<HomeCta />

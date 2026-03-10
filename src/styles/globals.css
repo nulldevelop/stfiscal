@@ -136,6 +136,10 @@
   --sidebar-ring: oklch(0.55 0.15 264);
 }
 
+@theme inline {
+  --font-display: var(--font-poppins);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -143,4 +147,8 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@utility font-display {
+  font-family: var(--font-poppins), sans-serif;
 }

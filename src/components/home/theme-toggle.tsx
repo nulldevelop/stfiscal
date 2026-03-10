@@ -18,7 +18,7 @@ export function ThemeToggle() {
 		<button
 			onClick={() => setTheme(isDark ? 'light' : 'dark')}
 			aria-label="Alternar tema"
-			className="group flex size-10 items-center justify-center rounded-xl border border-border/60 bg-background/50 text-muted-foreground transition-all duration-200 hover:border-primary/40 hover:bg-primary/8 hover:text-primary"
+			className="group flex size-10 items-center justify-center rounded-xl border border-white/20 bg-white/10 text-white/80 transition-all duration-200 hover:border-white/40 hover:bg-white/20 hover:text-white"
 		>
 			{isDark ? (
 				<IconSun className="size-5 animate-in fade-in zoom-in-75 duration-200" />

@@ -12,87 +12,86 @@ const features = [
 		icon: IconFileCheck,
 		title: 'Gestão de Contratos',
 		description:
-			'Cadastre, acompanhe e fiscalize contratos com visibilidade total sobre prazos, valores e responsáveis.',
+			'Cadastre, acompanhe e fiscalize contratos com visibilidade total.',
+		className: 'md:col-span-2',
 	},
 	{
 		icon: IconSearch,
 		title: 'Fiscalização Ativa',
 		description:
-			'Registre ocorrências, notificações e relatórios de forma estruturada, rastreável e auditável.',
+			'Registre ocorrências e notificações.',
+		className: 'md:col-span-1',
 	},
 	{
 		icon: IconChartBar,
-		title: 'Relatórios e Indicadores',
+		title: 'Indicadores',
 		description:
-			'Painéis automáticos para acompanhamento de desempenho, prazos e conformidade contratual.',
+			'Painéis automáticos de desempenho.',
+		className: 'md:col-span-1',
 	},
 	{
 		icon: IconUsers,
 		title: 'Controle de Acesso',
 		description:
-			'Gestores, fiscais e administradores com permissões granulares e rastreabilidade de ações.',
+			'Permissões granulares para fiscais.',
+		className: 'md:col-span-2',
 	},
 	{
 		icon: IconLock,
-		title: 'Segurança e Auditoria',
+		title: 'Segurança',
 		description:
-			'Audit log completo de todas as ações e autenticação robusta para conformidade institucional.',
+			'Audit log completo e autenticação robusta.',
+		className: 'md:col-span-2',
 	},
 	{
 		icon: IconBuildingBank,
-		title: 'Conformidade Legal',
+		title: 'Conformidade',
 		description:
-			'Estruturado conforme a legislação vigente de fiscalização de contratos da administração pública.',
+			'Nova lei de licitações.',
+		className: 'md:col-span-1',
 	},
 ]
 
 export function HomeFeatures() {
 	return (
-		<section id="recursos" className="py-32">
-			<div className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-12">
-
-				{/* Header */}
-				<div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-end lg:gap-20 mb-20 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both">
-					<div>
-						<p className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4">
-							Funcionalidades
-						</p>
-						<h2 className="text-5xl font-black tracking-tight text-foreground leading-[1.08] sm:text-6xl">
-							Tudo que a gestão{' '}
-							<span className="text-primary">precisa.</span>
-						</h2>
-					</div>
-					<p className="text-lg leading-relaxed text-muted-foreground lg:mb-2">
-						Cada módulo foi pensado para o dia a dia da administração pública,
-						com foco em rastreabilidade, conformidade e facilidade de uso.
+		<section id="recursos" className="relative bg-background py-24 sm:py-32">
+			<div className="mx-auto max-w-5xl px-6 w-full">
+				
+				{/* Header Compacto */}
+				<div className="mb-10 text-center animate-in fade-in slide-in-from-bottom-4 duration-1000 fill-mode-both">
+					<h2 className="font-display text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200 fill-mode-both leading-[1.1]">
+						Tudo que a gestão precisa.
+					</h2>
+					<p className="mx-auto mt-4 max-w-2xl text-base text-muted-foreground animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-400 fill-mode-both">
+						Módulos focados em conformidade e simplicidade de uso.
 					</p>
 				</div>
 
-				{/* Grid */}
-				<div className="grid grid-cols-1 gap-px rounded-2xl border border-border bg-border overflow-hidden sm:grid-cols-2 lg:grid-cols-3 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150 fill-mode-both">
+				{/* Bento Grid Compacto com Animação em Cascata */}
+				<div className="grid grid-cols-1 md:grid-cols-3 gap-3 auto-rows-min">
 					{features.map((feature, i) => (
 						<div
 							key={feature.title}
-							className="group relative flex flex-col gap-6 bg-card p-8 transition-all duration-300 hover:bg-primary/[0.03] dark:hover:bg-primary/[0.06]"
+							style={{ "--delay": `${600 + i * 100}ms` } as React.CSSProperties}
+							className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border/50 bg-card p-5 transition-all duration-500 hover:border-primary/30 hover:bg-accent/30 hover:shadow-lg hover:shadow-primary/5 animate-in fade-in zoom-in-95 slide-in-from-bottom-4 fill-mode-both duration-1000 ${feature.className}`}
 						>
-							<span className="absolute right-6 top-6 text-xs font-bold tabular-nums text-border transition-colors duration-300 group-hover:text-primary/30">
-								{String(i + 1).padStart(2, '0')}
-							</span>
-
-							<div className="absolute bottom-0 left-0 right-0 h-0.5 scale-x-0 bg-primary transition-transform duration-300 origin-left group-hover:scale-x-100" />
-
-							<div className="flex size-14 items-center justify-center rounded-2xl border border-primary/15 bg-primary/8 text-primary transition-all duration-300 group-hover:border-primary/35 group-hover:bg-primary/15 group-hover:scale-110">
-								<feature.icon className="size-7" />
-							</div>
-
-							<div>
-								<h3 className="text-lg font-bold text-foreground leading-snug mb-2.5">
+							{/* Injetando o delay via classe dinâmica ou estilo inline para evitar repetição massiva de código */}
+							<div className="absolute inset-0 bg-transparent" style={{ animationDelay: `var(--delay)` }} />
+							
+							<div className="relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-1000 fill-mode-both" style={{ animationDelay: `var(--delay)` }}>
+								<div className="mb-4 inline-flex size-10 items-center justify-center rounded-lg bg-background shadow-sm ring-1 ring-border transition-colors group-hover:bg-primary group-hover:ring-primary">
+									<feature.icon className="size-5 text-primary transition-colors group-hover:text-primary-foreground" stroke={1.5} />
+								</div>
+								<h3 className="mb-1 text-base font-bold text-foreground">
 									{feature.title}
 								</h3>
-								<p className="text-base leading-relaxed text-muted-foreground">
+								<p className="text-xs text-muted-foreground leading-relaxed">
 									{feature.description}
 								</p>
 							</div>
+
+							{/* Gradiente de fundo sutil */}
+							<div className="absolute -bottom-12 -right-12 size-24 bg-primary/10 blur-2xl transition-opacity duration-500 opacity-0 group-hover:opacity-100" />
 						</div>
 					))}
 				</div>
