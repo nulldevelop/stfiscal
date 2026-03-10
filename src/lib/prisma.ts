@@ -1,11 +1,10 @@
-
 import 'dotenv/config'
 import { PrismaMariaDb } from '@prisma/adapter-mariadb'
 import { PrismaClient } from '../generated/prisma/client'
 
 const globalForPrisma = globalThis as unknown as {
-	prisma: PrismaClient | undefined
-	adapter: PrismaMariaDb | undefined
+	adapter?: PrismaMariaDb
+	prisma?: PrismaClient
 }
 
 function createAdapter() {
@@ -20,10 +19,10 @@ function createAdapter() {
 			: 10,
 		connectTimeout: process.env.DATABASE_CONNECT_TIMEOUT
 			? Number.parseInt(process.env.DATABASE_CONNECT_TIMEOUT, 10)
-			: 20000,
+			: 100000,
 		acquireTimeout: process.env.DATABASE_CONNECT_TIMEOUT
 			? Number.parseInt(process.env.DATABASE_CONNECT_TIMEOUT, 10)
-			: 20000,
+			: 100000,
 	})
 }
 
@@ -37,6 +36,4 @@ function createPrismaClient() {
 
 export const prisma = globalForPrisma.prisma ?? createPrismaClient()
 
-if (process.env.NODE_ENV !== 'production') {
-	globalForPrisma.prisma = prisma
-}
+globalForPrisma.prisma = prisma // ← sem verificação de NODE_ENV
