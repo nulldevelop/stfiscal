@@ -3,6 +3,7 @@
 import {
 	LinkIcon,
 	Loader2,
+	Mail,
 	RefreshCw,
 } from 'lucide-react'
 import { useState } from 'react'
@@ -18,6 +19,7 @@ interface FiscaisPageActionsProps {
 export function FiscaisPageActions({ onSuccess }: FiscaisPageActionsProps) {
 	const [isBulkLinkLoading, setIsBulkLinkLoading] = useState(false)
 	const [isResetLoading, setIsResetLoading] = useState(false)
+	const [isSendingEmails, setIsSendingEmails] = useState(false)
 
 	const handleBulkLink = async () => {
 		setIsBulkLinkLoading(true)
@@ -67,8 +69,46 @@ export function FiscaisPageActions({ onSuccess }: FiscaisPageActionsProps) {
 		}
 	}
 
+	const handleSendPendingEmails = async () => {
+		setIsSendingEmails(true)
+		try {
+			const response = await fetch('/api/cron/send-pending-emails', {
+				method: 'POST',
+			})
+			const data = await response.json()
+
+			if (response.ok && data.success) {
+				toast.success('Emails enviados!', {
+					description: data.message,
+					duration: 8000,
+				})
+			} else {
+				toast.error(data.error || 'Erro ao enviar emails')
+			}
+		} catch (error) {
+			toast.error('Ocorreu um erro inesperado.')
+			console.error(error)
+		} finally {
+			setIsSendingEmails(false)
+		}
+	}
+
 	return (
 		<div className="flex items-center gap-2">
+			<Button
+				variant="outline"
+				onClick={handleSendPendingEmails}
+				disabled={isSendingEmails}
+				className="flex items-center gap-2 text-foreground"
+			>
+				{isSendingEmails ? (
+					<Loader2 className="h-4 w-4 animate-spin" />
+				) : (
+					<Mail className="h-4 w-4 text-foreground" />
+				)}
+				<span className="text-foreground">Disparar Emails</span>
+			</Button>
+
 			<Button
 				variant="outline"
 				onClick={handleBulkLink}

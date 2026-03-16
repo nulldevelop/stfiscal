@@ -22,7 +22,10 @@ export async function ensureMember(
 	})
 
 	if (!org) {
-		console.warn('Nenhuma organização ativa para vincular o usuário:', userId)
+		console.warn(
+			'[ensureMember] Nenhuma organização ativa para vincular o usuário:',
+			userId,
+		)
 		return null
 	}
 

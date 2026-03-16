@@ -238,12 +238,12 @@ export function LoginForm() {
 								<FormItem>
 									<div className="flex items-center justify-between">
 										<FormLabel className="text-sm">Senha</FormLabel>
-										<button
-											type="button"
+										<Link
+											href="/forgot-password"
 											className="text-xs font-medium text-primary transition-colors hover:text-primary/80"
 										>
 											Esqueceu a senha?
-										</button>
+										</Link>
 									</div>
 									<div className="relative">
 										<FormControl>
