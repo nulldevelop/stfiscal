@@ -30,8 +30,8 @@ export default async function BensEServicosReportPage({
 
 	if (isPrincipalDoContrato && contratoId) {
 		return (
-			<div className="container mx-auto space-y-6">
-				<div className="mx-2 space-y-2">
+			<div className="container space-y-3">
+				<div className="space-y-2">
 					<h1 className="font-semibold text-2xl text-foreground">
 						Relatório de Fiscalização – Fiscal Tecnico
 					</h1>

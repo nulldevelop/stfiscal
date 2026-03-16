@@ -33,6 +33,7 @@ import type { BensEServicosReportFormValues } from '../_actions/action-schema'
 import { createBensEServicosReport } from '../_actions/create-bens-e-servicos-report'
 import type { BensEServicosReportFormProps } from './types'
 import { useBensEServicosForm } from './use-bens-e-servicos-form'
+import { handleFormValidationError } from '../../_utils/form-error-handler'
 
 export function BensEServicosReportForm({
 	initialContrato,
@@ -320,9 +321,14 @@ export function BensEServicosReportForm({
 									disabled={isPending}
 									onClick={(e) => {
 										e.preventDefault()
-										form.handleSubmit(onSubmit, () => {
-											setIsDialogOpen(false)
-										})()
+										form.handleSubmit(
+											onSubmit,
+											(errors) => {
+												handleFormValidationError(errors, form, () => {
+													setIsDialogOpen(false)
+												})
+											},
+										)()
 									}}
 								>
 									{isPending ? 'Enviando...' : 'Confirmar e Enviar'}

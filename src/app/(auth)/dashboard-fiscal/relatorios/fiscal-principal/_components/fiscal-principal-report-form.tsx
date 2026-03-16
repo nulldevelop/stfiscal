@@ -20,6 +20,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Combobox } from '@/components/ui/combobox'
+import { handleFormValidationError } from '../../_utils/form-error-handler'
 import {
 	Form,
 	FormControl,
@@ -144,7 +145,7 @@ export function FiscalPrincipalReportForm({ contratoId, formConfig }: Props) {
 			>
 				{/* SEÇÃO 1 - IDENTIFICAÇÃO DO CONTRATO */}
 				<div className="space-y-6">
-					<div className="flex items-center gap-4 px-2">
+					<div className="flex items-center gap-4">
 						<h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground/40 whitespace-nowrap">
 							1 - IDENTIFICAÇÃO DO CONTRATO
 						</h3>
@@ -640,9 +641,14 @@ export function FiscalPrincipalReportForm({ contratoId, formConfig }: Props) {
 									disabled={isPending}
 									onClick={(e) => {
 										e.preventDefault()
-										form.handleSubmit(onSubmit, () => {
-											setIsDialogOpen(false)
-										})()
+										form.handleSubmit(
+											onSubmit,
+											(errors) => {
+												handleFormValidationError(errors, form, () => {
+													setIsDialogOpen(false)
+												})
+											},
+										)()
 									}}
 								>
 									{isPending ? 'Enviando...' : 'Confirmar e Enviar'}

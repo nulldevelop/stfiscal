@@ -225,8 +225,9 @@ model Organization {
   lastSyncAt      DateTime?
   lastSyncStatus  String?
   lastSyncMessage String?        @db.Text
-  systemUpdates   SystemUpdate[]
-  formConfigs     FormConfig[]
+  systemUpdates         SystemUpdate[]
+  formConfigs           FormConfig[]
+  reportOverdueConfigs  ReportOverdueConfig[]
 
   @@map("organization")
 }
@@ -1077,6 +1078,23 @@ model TipoRelatorio {
   organization   Organization @relation(fields: [organizationId], references: [id])
 
   @@map("tipo_relatorio")
+}
+
+// Configuração de dias de overdue por tipo de relatório
+model ReportOverdueConfig {
+  id             String       @id @default(uuid())
+  reportType     String       // "BENS_SERVICOS", "TRANSPORTE", "OBRAS", "TERCEIRIZACAO", "FISCAL_PRINCIPAL"
+  diasOverdue    Int          @default(30) // Dias após o período analisado para considerar overdue
+  diasAlerta     Int          @default(7)  // Dias antes do vencimento para alertar
+  isActive       Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([reportType, organizationId])
+  @@index([organizationId])
+  @@map("report_overdue_config")
 }
 
 model AuditLog {

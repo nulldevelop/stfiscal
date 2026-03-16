@@ -6,7 +6,7 @@ import { prisma } from '@/lib/prisma'
 
 export interface MemberData {
 	id: string
-	oderId: string
+	userId: string
 	name: string
 	email: string
 	role: string
@@ -71,7 +71,7 @@ export async function getMembers({
 
 		const members: MemberData[] = records.map((r) => ({
 			id: r.id,
-			oderId: r.userId,
+			userId: r.userId,
 			name: r.user.name || 'Sem nome',
 			email: r.user.email || r.email,
 			role: r.role,

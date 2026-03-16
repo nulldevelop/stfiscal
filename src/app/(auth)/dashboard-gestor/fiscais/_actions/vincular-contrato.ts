@@ -92,6 +92,57 @@ export async function vincularContratoAction({
 			})
 		}
 
+		// ========================================
+		// CRIAR FiscalContrato e FiscalContratoLink
+		// Para manter consistência com o fluxo automático
+		// ========================================
+		if (member.user) {
+			// Criar ou buscar FiscalContrato
+			let fiscalContrato = await prisma.fiscalContrato.findFirst({
+				where: {
+					userId: member.user.id,
+					organizationId,
+				},
+			})
+
+			if (!fiscalContrato) {
+				// Criar FiscalContrato com dados do member/user
+				fiscalContrato = await prisma.fiscalContrato.create({
+					data: {
+						nome: member.user.name || member.user.email || 'Sem nome',
+						cpf: member.fiscalCpf || '',
+						matricula: member.fiscalMatricula || '',
+						cargo:
+							member.fiscalCargo ||
+							(tipo === 'PRINCIPAL' ? 'FISCAL TECNICO' : 'FISCAL SETORIAL'),
+						contato: member.fiscalContato,
+						organizationId,
+						userId: member.user.id,
+						ativo: true,
+					},
+				})
+			}
+
+			// Criar FiscalContratoLink se não existir
+			await prisma.fiscalContratoLink.upsert({
+				where: {
+					fiscalContratoId_contratoId: {
+						fiscalContratoId: fiscalContrato.id,
+						contratoId,
+					},
+				},
+				create: {
+					fiscalContratoId: fiscalContrato.id,
+					contratoId,
+					dtinicio: new Date().toISOString(),
+					ativo: true,
+				},
+				update: {
+					ativo: true,
+				},
+			})
+		}
+
 		revalidatePath('/dashboard-gestor/fiscais')
 		revalidatePath('/dashboard-gestor/contratos')
 
@@ -116,6 +167,12 @@ export async function desvincularContratoAction({
 	}
 
 	try {
+		// Buscar o member para obter o userId
+		const member = await prisma.member.findUnique({
+			where: { id: memberId },
+			select: { userId: true },
+		})
+
 		if (tipo === 'PRINCIPAL') {
 			await prisma.contratoFiscal.delete({
 				where: { contratoId },
@@ -129,6 +186,33 @@ export async function desvincularContratoAction({
 					},
 				},
 			})
+		}
+
+		// ========================================
+		// DESATIVAR FiscalContratoLink
+		// Para manter consistência com o fluxo automático
+		// ========================================
+		if (member?.userId) {
+			const fiscalContrato = await prisma.fiscalContrato.findFirst({
+				where: {
+					userId: member.userId,
+					organizationId,
+				},
+			})
+
+			if (fiscalContrato) {
+				// Desativar o link ao invés de deletar (manter histórico)
+				await prisma.fiscalContratoLink.updateMany({
+					where: {
+						fiscalContratoId: fiscalContrato.id,
+						contratoId,
+					},
+					data: {
+						ativo: false,
+						dtfim: new Date().toISOString(),
+					},
+				})
+			}
 		}
 
 		revalidatePath('/dashboard-gestor/fiscais')

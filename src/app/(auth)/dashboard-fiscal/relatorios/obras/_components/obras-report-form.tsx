@@ -18,6 +18,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Combobox } from '@/components/ui/combobox'
+import { handleFormValidationError } from '../../_utils/form-error-handler'
 import {
 	Form,
 	FormControl,
@@ -1002,9 +1003,14 @@ export function ObrasReportForm({
 									disabled={isPending}
 									onClick={(e) => {
 										e.preventDefault()
-										form.handleSubmit(onSubmit, () => {
-											setIsDialogOpen(false)
-										})()
+										form.handleSubmit(
+											onSubmit,
+											(errors) => {
+												handleFormValidationError(errors, form, () => {
+													setIsDialogOpen(false)
+												})
+											},
+										)()
 									}}
 								>
 									{isPending ? 'Enviando...' : 'Confirmar e Enviar'}

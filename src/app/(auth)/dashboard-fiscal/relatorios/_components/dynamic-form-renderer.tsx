@@ -174,10 +174,10 @@ export function DynamicFormRenderer({
 										<span className="text-destructive font-bold text-xs">*</span>
 									</div>
 									<FormControl>
-										<Textarea 
-											{...field} 
-											placeholder="Por favor, descreva detalhadamente os motivos desta resposta..." 
-											className="min-h-24 bg-background border-primary/20 focus-visible:ring-primary/40 resize-none shadow-inner" 
+										<Textarea
+											{...field}
+											placeholder="Por favor, descreva detalhadamente os motivos desta resposta..."
+											className="min-h-24 bg-background border-primary/20 focus-visible:ring-primary/40 resize-none shadow-inner"
 										/>
 									</FormControl>
 									<FormMessage className="text-[10px] font-bold" />
@@ -186,7 +186,7 @@ export function DynamicFormRenderer({
 						/>
 					)}
 				</div>
-				
+
 				{/* Injeção de componentes customizados (Tabelas, etc) */}
 				<div className="ml-3.5">
 					{renderAfterField && renderAfterField(fieldKey)}

@@ -1,6 +1,12 @@
 'use server'
 
 import { getCurrentOrganizationId } from '@/lib/auth-actions'
+import {
+	calculateOverdueStatus,
+	getConfigKeyForReportType,
+	getOverdueConfigsForOrg,
+	type OverdueInfo,
+} from '@/lib/overdue-utils'
 import { prisma } from '@/lib/prisma'
 
 export type ReportType =
@@ -23,6 +29,7 @@ export interface ReportWithDetails {
 	assinaturaDigital: string
 	periodoInicio: Date
 	periodoFim: Date
+	overdueInfo?: OverdueInfo
 }
 
 export interface EmpresaWithReports {
@@ -106,6 +113,9 @@ export async function getReportsData({
 	}
 
 	try {
+		// Busca configurações de overdue
+		const overdueConfigs = await getOverdueConfigsForOrg(organizationId)
+
 		const [
 			bensReports,
 			transporteReports,
@@ -155,6 +165,19 @@ export async function getReportsData({
 			}),
 		])
 
+		// Função para calcular overdue de um relatório
+		const getOverdueInfo = (
+			reportType: ReportType,
+			periodoAnalisadoFim: Date,
+		): OverdueInfo => {
+			const configKey = getConfigKeyForReportType(reportType)
+			const config = overdueConfigs[configKey] || {
+				diasOverdue: 30,
+				diasAlerta: 7,
+			}
+			return calculateOverdueStatus(reportType, periodoAnalisadoFim, config)
+		}
+
 		// Mapear relatórios com informações da empresa
 		type ReportWithEmpresa = ReportWithDetails & {
 			empresaId: string
@@ -173,16 +196,17 @@ export async function getReportsData({
 				type: type,
 				protocolo: r.protocolo,
 				contratoNumero: contratoNumero,
-				contratada: r.contrato?.contratado || r.contratada || 'Não informada',
-				objeto: r.objeto || 'Não informado',
+				contratada: r.contrato?.contratado || r.contratada || 'Nao informada',
+				objeto: r.objeto || 'Nao informado',
 				fiscalNome: r.fiscalDoContrato.user?.name ?? r.fiscalDoContrato.nome,
 				filePath: `/api/reports/${r.protocolo}.pdf`,
 				assinaturaDigital: r.assinaturaDigital,
 				periodoInicio: r.periodoAnalisadoInicio,
 				periodoFim: r.periodoAnalisadoFim,
+				overdueInfo: getOverdueInfo(type, r.periodoAnalisadoFim),
 				empresaId: empresa?.id ?? `contratada-${r.contratada}`,
 				empresaNome:
-					empresa?.name ?? (r.contratada || 'Empresa não encontrada'),
+					empresa?.name ?? (r.contratada || 'Empresa nao encontrada'),
 				empresaCnpj: empresa?.cnpj ?? 'N/A',
 			}
 		}

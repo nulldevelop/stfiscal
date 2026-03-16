@@ -1,4 +1,13 @@
-import { IconClipboardList, IconSearch, IconUser, IconCalendarClock, IconDatabase, IconTrash, IconEdit, IconPlus } from '@tabler/icons-react'
+import {
+	IconCalendarClock,
+	IconClipboardList,
+	IconDatabase,
+	IconEdit,
+	IconPlus,
+	IconSearch,
+	IconTrash,
+	IconUser,
+} from '@tabler/icons-react'
 import { Badge } from '@/components/ui/badge'
 import {
 	Card,
@@ -7,6 +16,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
 import {
 	Table,
 	TableBody,
@@ -24,23 +34,28 @@ import {
 	getAuditLogEntities,
 	getAuditLogs,
 } from './_data-access/get-audit-logs'
-import { Separator } from '@/components/ui/separator'
 
-const ACTION_CONFIG: Record<LogAction, { label: string; class: string; icon: any }> = {
-	CREATE: { 
-		label: 'Criação', 
-		class: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400', 
-		icon: IconPlus 
+const ACTION_CONFIG: Record<
+	LogAction,
+	{ label: string; class: string; icon: any }
+> = {
+	CREATE: {
+		label: 'Criação',
+		class:
+			'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400',
+		icon: IconPlus,
 	},
-	UPDATE: { 
-		label: 'Edição', 
-		class: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-500/10 dark:text-blue-400', 
-		icon: IconEdit 
+	UPDATE: {
+		label: 'Edição',
+		class:
+			'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-500/10 dark:text-blue-400',
+		icon: IconEdit,
 	},
-	DELETE: { 
-		label: 'Exclusão', 
-		class: 'bg-red-50 text-red-700 border-red-200 dark:bg-red-500/10 dark:text-red-400', 
-		icon: IconTrash 
+	DELETE: {
+		label: 'Exclusão',
+		class:
+			'bg-red-50 text-red-700 border-red-200 dark:bg-red-500/10 dark:text-red-400',
+		icon: IconTrash,
 	},
 }
 
@@ -72,7 +87,7 @@ export default async function LogsPage({
 
 	if (!logsResult.success || !entitiesResult.success) {
 		return (
-			<div className="flex min-h-svh items-center justify-center p-4">
+			<div className="flex min-h-svh items-center justify-center">
 				<Card className="w-full max-w-md border-red-200 bg-red-50/50">
 					<CardHeader>
 						<CardTitle className="text-red-700">Erro no Carregamento</CardTitle>
@@ -91,7 +106,7 @@ export default async function LogsPage({
 	const entities = entitiesResult.data
 
 	return (
-		<div className="flex flex-col gap-6 p-4 md:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+		<div className="flex flex-col gap-6 w-full py-4">
 			{/* Header */}
 			<div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
 				<div className="space-y-1">
@@ -104,10 +119,11 @@ export default async function LogsPage({
 						</h1>
 					</div>
 					<p className="text-muted-foreground text-sm pl-11">
-						Rastreabilidade completa de todas as ações administrativas realizadas no sistema.
+						Rastreabilidade completa de todas as ações administrativas
+						realizadas no sistema.
 					</p>
 				</div>
-				
+
 				<LogFilters
 					entities={entities}
 					currentAction={params.action}
@@ -128,7 +144,9 @@ export default async function LogsPage({
 								</div>
 								<div className="text-center">
 									<p className="font-semibold">Nenhum log encontrado</p>
-									<p className="text-sm opacity-70">Tente ajustar os filtros para encontrar o que procura.</p>
+									<p className="text-sm opacity-70">
+										Tente ajustar os filtros para encontrar o que procura.
+									</p>
 								</div>
 							</div>
 						) : (
@@ -139,7 +157,9 @@ export default async function LogsPage({
 											{total}
 										</Badge>
 										<span className="text-muted-foreground">
-											{total === 1 ? 'operação registrada' : 'operações registradas'}
+											{total === 1
+												? 'operação registrada'
+												: 'operações registradas'}
 										</span>
 									</div>
 								</div>
@@ -167,8 +187,12 @@ export default async function LogsPage({
 														Entidade
 													</div>
 												</TableHead>
-												<TableHead className="min-w-[200px]">Registro Afetado</TableHead>
-												<TableHead className="w-[80px] text-right">Detalhes</TableHead>
+												<TableHead className="min-w-[200px]">
+													Registro Afetado
+												</TableHead>
+												<TableHead className="w-[80px] text-right">
+													Detalhes
+												</TableHead>
 											</TableRow>
 										</TableHeader>
 										<TableBody>
@@ -177,7 +201,10 @@ export default async function LogsPage({
 												const ActionIcon = config.icon
 
 												return (
-													<TableRow key={log.id} className="group hover:bg-muted/30 transition-colors">
+													<TableRow
+														key={log.id}
+														className="group hover:bg-muted/30 transition-colors"
+													>
 														<TableCell className="whitespace-nowrap">
 															<span className="text-sm tabular-nums text-muted-foreground">
 																{formatDataWithHours(log.createdAt)}
@@ -194,7 +221,10 @@ export default async function LogsPage({
 															</div>
 														</TableCell>
 														<TableCell>
-															<Badge variant="outline" className={`gap-1.5 px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider ${config.class}`}>
+															<Badge
+																variant="outline"
+																className={`gap-1.5 px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider ${config.class}`}
+															>
 																<ActionIcon className="h-3 w-3" />
 																{config.label}
 															</Badge>

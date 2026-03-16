@@ -14,6 +14,9 @@ export function ActionsCard({ contrato, userRole }: ActionsCardProps) {
 	// Usamos a nova flag booleana que verifica o vínculo real no banco
 	const isPrincipalDoContrato = contrato.isPrincipalDoContrato
 
+	// Se for fiscal principal, mostra apenas o relatório final
+	const isFiscalPrincipal = isPrincipalDoContrato
+
 	return (
 		<div className="space-y-6">
 			<Card>
@@ -22,7 +25,7 @@ export function ActionsCard({ contrato, userRole }: ActionsCardProps) {
 				</CardHeader>
 				<CardContent className="grid gap-3">
 					{/* Relatório Final (Anexo IV) - Exclusivo para o Fiscal Principal do contrato */}
-					{isPrincipalDoContrato && (
+					{isFiscalPrincipal && (
 						<Button
 							asChild
 							variant="outline"
@@ -37,58 +40,63 @@ export function ActionsCard({ contrato, userRole }: ActionsCardProps) {
 						</Button>
 					)}
 
-					<div className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mt-2 mb-1 px-1">
-						Relatórios Periódicos
-					</div>
+					{/* Relatórios Periódicos - Apenas para fiscais não principais */}
+					{!isFiscalPrincipal && (
+						<>
+							<div className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mt-2 mb-1 px-1">
+								Relatórios Periódicos
+							</div>
 
-					<Button
-						asChild
-						variant="outline"
-						className="justify-start gap-2 h-11 border-green-200 hover:bg-green-50 hover:text-green-700"
-					>
-						<Link
-							href={`/dashboard-fiscal/relatorios/bens-e-servicos?contratoId=${contrato.id}`}
-						>
-							<FileText className="h-4 w-4" />
-							Bens e Serviços
-						</Link>
-					</Button>
-					<Button
-						asChild
-						variant="outline"
-						className="justify-start gap-2 h-11 border-blue-200 hover:bg-blue-50 hover:text-blue-700"
-					>
-						<Link
-							href={`/dashboard-fiscal/relatorios/servicos-transporte?contratoId=${contrato.id}`}
-						>
-							<Truck className="h-4 w-4" />
-							Serviços de Transporte
-						</Link>
-					</Button>
-					<Button
-						asChild
-						variant="outline"
-						className="justify-start gap-2 h-11 border-orange-200 hover:bg-orange-50 hover:text-orange-700"
-					>
-						<Link
-							href={`/dashboard-fiscal/relatorios/obras?contratoId=${contrato.id}`}
-						>
-							<Construction className="h-4 w-4" />
-							Obras
-						</Link>
-					</Button>
-					<Button
-						asChild
-						variant="outline"
-						className="justify-start gap-2 h-11 border-purple-200 hover:bg-purple-50 hover:text-purple-700"
-					>
-						<Link
-							href={`/dashboard-fiscal/relatorios/terceirizacao?contratoId=${contrato.id}`}
-						>
-							<Users className="h-4 w-4" />
-							Terceirização de Mão de Obra
-						</Link>
-					</Button>
+							<Button
+								asChild
+								variant="outline"
+								className="justify-start gap-2 h-11 border-green-200 hover:bg-green-50 hover:text-green-700"
+							>
+								<Link
+									href={`/dashboard-fiscal/relatorios/bens-e-servicos?contratoId=${contrato.id}`}
+								>
+									<FileText className="h-4 w-4" />
+									Bens e Serviços
+								</Link>
+							</Button>
+							<Button
+								asChild
+								variant="outline"
+								className="justify-start gap-2 h-11 border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+							>
+								<Link
+									href={`/dashboard-fiscal/relatorios/servicos-transporte?contratoId=${contrato.id}`}
+								>
+									<Truck className="h-4 w-4" />
+									Serviços de Transporte
+								</Link>
+							</Button>
+							<Button
+								asChild
+								variant="outline"
+								className="justify-start gap-2 h-11 border-orange-200 hover:bg-orange-50 hover:text-orange-700"
+							>
+								<Link
+									href={`/dashboard-fiscal/relatorios/obras?contratoId=${contrato.id}`}
+								>
+									<Construction className="h-4 w-4" />
+									Obras
+								</Link>
+							</Button>
+							<Button
+								asChild
+								variant="outline"
+								className="justify-start gap-2 h-11 border-purple-200 hover:bg-purple-50 hover:text-purple-700"
+							>
+								<Link
+									href={`/dashboard-fiscal/relatorios/terceirizacao?contratoId=${contrato.id}`}
+								>
+									<Users className="h-4 w-4" />
+									Terceirização de Mão de Obra
+								</Link>
+							</Button>
+						</>
+					)}
 				</CardContent>
 			</Card>
 

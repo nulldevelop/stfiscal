@@ -1,8 +1,16 @@
 'use client'
 
-import { FileStack, Link2, MoreHorizontal, UserCheck } from 'lucide-react'
+import {
+	FileSearch,
+	FileStack,
+	Link2,
+	MoreHorizontal,
+	Printer,
+	Trash2,
+} from 'lucide-react'
+import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, useTransition } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -58,6 +66,7 @@ export function MembersTable({
 	const [loading, setLoading] = useState(true)
 	const [selectedMember, setSelectedMember] = useState<MemberData | null>(null)
 	const [isModalOpen, setIsModalOpen] = useState(false)
+	const [isExporting, startExport] = useTransition()
 
 	const router = useRouter()
 	const pathname = usePathname()
@@ -97,6 +106,18 @@ export function MembersTable({
 		triggerRefresh()
 	}
 
+	const handleExportReport = (userId: string) => {
+		if (!userId) {
+			toast.error('ID do fiscal não encontrado.')
+			return
+		}
+		window.open(`/api/fiscais/${userId}/report`, '_blank')
+	}
+
+	const handleRowClick = (member: MemberData) => {
+		router.push(`/dashboard-gestor/fiscais/${member.userId}`)
+	}
+
 	const totalPages = Math.ceil(data.total / pageSize)
 
 	if (loading) {
@@ -128,7 +149,11 @@ export function MembersTable({
 								</TableHeader>
 								<TableBody>
 									{data.members.map((member) => (
-										<TableRow key={member.id}>
+										<TableRow
+											key={member.id}
+											className="cursor-pointer hover:bg-accent/50 transition-colors"
+											onClick={() => handleRowClick(member)}
+										>
 											<TableCell className="font-medium">
 												{member.name}
 											</TableCell>
@@ -153,7 +178,10 @@ export function MembersTable({
 													<span className="text-muted-foreground">-</span>
 												)}
 											</TableCell>
-											<TableCell className="text-right">
+											<TableCell
+												className="text-right"
+												onClick={(e) => e.stopPropagation()}
+											>
 												<DropdownMenu>
 													<DropdownMenuTrigger asChild>
 														<Button variant="ghost" className="h-8 w-8 p-0">
@@ -164,11 +192,28 @@ export function MembersTable({
 													<DropdownMenuContent align="end">
 														<DropdownMenuLabel>Ações</DropdownMenuLabel>
 														<DropdownMenuSeparator />
+														<DropdownMenuItem asChild>
+															<Link
+																href={`/dashboard-gestor/fiscais/${member.userId}`}
+															>
+																<FileSearch className="mr-2 h-4 w-4" />
+																<span>Ver Detalhes</span>
+															</Link>
+														</DropdownMenuItem>
 														<DropdownMenuItem
 															onClick={() => handleVincular(member)}
 														>
 															<Link2 className="mr-2 h-4 w-4" />
 															<span>Vincular a Contrato</span>
+														</DropdownMenuItem>
+														<DropdownMenuItem
+															onClick={() => handleExportReport(member.userId)}
+															disabled={isExporting}
+														>
+															<Printer className="mr-2 h-4 w-4" />
+															<span>
+																{isExporting ? 'Gerando...' : 'Exportar Relatório'}
+															</span>
 														</DropdownMenuItem>
 													</DropdownMenuContent>
 												</DropdownMenu>

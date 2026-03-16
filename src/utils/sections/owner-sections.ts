@@ -1,5 +1,6 @@
 import {
 	IconBell,
+	IconClock,
 	IconForms,
 	IconHome,
 	IconSettings,
@@ -24,9 +25,14 @@ export const ownerSections: NavSection[] = [
 			},
 			{ title: 'LOGS', url: '/dashboard-owner/logs', icon: Logs },
 			{
-				title: 'Cadastro de Formulários',
+				title: 'Cadastro de Formularios',
 				url: '/dashboard-owner/forms',
 				icon: IconForms,
+			},
+			{
+				title: 'Prazos de Vencimento',
+				url: '/dashboard-owner/overdue-config',
+				icon: IconClock,
 			},
 			{ title: 'Changelog', url: '/dashboard-owner/changelog', icon: IconBell },
 		],

@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/style/noNonNullAssertion:dev */
 import { NextResponse } from 'next/server'
 import { getAuth } from '@/lib/auth-actions'
 import { getPendingReportsEmailHtml, sendEmail } from '@/lib/email/mailer'

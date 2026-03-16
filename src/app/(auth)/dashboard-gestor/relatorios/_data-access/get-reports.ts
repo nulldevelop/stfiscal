@@ -1,6 +1,12 @@
 /** biome-ignore-all lint/correctness/noUnusedVariables: dev */
 'use server'
 import { getCurrentOrganizationId } from '@/lib/auth-actions'
+import {
+	calculateOverdueStatus,
+	getConfigKeyForReportType,
+	getOverdueConfigsForOrg,
+	type OverdueInfo,
+} from '@/lib/overdue-utils'
 import { prisma } from '@/lib/prisma'
 
 export interface ReportFilterParams {
@@ -37,6 +43,9 @@ export async function getReports({ search }: ReportFilterParams) {
 	}
 
 	try {
+		// Busca configurações de overdue
+		const overdueConfigs = await getOverdueConfigsForOrg(organizationId)
+
 		const [
 			bensReports,
 			transporteReports,
@@ -82,14 +91,28 @@ export async function getReports({ search }: ReportFilterParams) {
 			}),
 		])
 
+		// Função para calcular overdue de um relatório
+		const getOverdueInfo = (
+			reportType: string,
+			periodoAnalisadoFim: Date,
+		): OverdueInfo => {
+			const configKey = getConfigKeyForReportType(reportType)
+			const config = overdueConfigs[configKey] || {
+				diasOverdue: 30,
+				diasAlerta: 7,
+			}
+			return calculateOverdueStatus(reportType, periodoAnalisadoFim, config)
+		}
+
 		// Normalize and combine
 		const allReports = [
 			...bensReports.map((r) => {
 				const contrato = r.contrato
 				const numeroValue = contrato?.numero ?? parseInt(r.contratoNumero, 10)
 				const { contratoNumero, ...restOfR } = r
+				const reportType = 'Bens e Servicos' as const
 				return {
-					type: 'Bens e Serviços' as const,
+					type: reportType,
 					user: r.fiscalDoContrato.user,
 					contratoNumero: Number.isNaN(numeroValue) ? 0 : numeroValue,
 					dataInicio: contrato?.dataInicio || null,
@@ -97,54 +120,63 @@ export async function getReports({ search }: ReportFilterParams) {
 					contratoTipoAto: contrato?.tipoAto,
 					contratado: contrato?.contratado || r.contratada,
 					filePath: `/api/reports/${r.protocolo}.pdf`,
+					overdueInfo: getOverdueInfo(reportType, r.periodoAnalisadoFim),
 					...restOfR,
 				}
 			}),
 			...transporteReports.map((r) => {
 				const numeroValue = parseInt(r.contratoNumero, 10)
 				const { contratoNumero, ...restOfR } = r
+				const reportType = 'Transporte' as const
 				return {
-					type: 'Transporte' as const,
+					type: reportType,
 					user: r.fiscalDoContrato.user,
 					contratoNumero: Number.isNaN(numeroValue) ? 0 : numeroValue,
-					contratado: r.contratada || 'Não informado',
+					contratado: r.contratada || 'Nao informado',
 					filePath: `/api/reports/${r.protocolo}.pdf`,
+					overdueInfo: getOverdueInfo(reportType, r.periodoAnalisadoFim),
 					...restOfR,
 				}
 			}),
 			...obrasReports.map((r) => {
 				const numeroValue = parseInt(r.contratoNumero, 10)
 				const { contratoNumero, ...restOfR } = r
+				const reportType = 'Obras' as const
 				return {
-					type: 'Obras' as const,
+					type: reportType,
 					user: r.fiscalDoContrato.user,
 					contratoNumero: Number.isNaN(numeroValue) ? 0 : numeroValue,
-					contratado: r.contratada || 'Não informado',
+					contratado: r.contratada || 'Nao informado',
 					filePath: `/api/reports/${r.protocolo}.pdf`,
+					overdueInfo: getOverdueInfo(reportType, r.periodoAnalisadoFim),
 					...restOfR,
 				}
 			}),
 			...terceirizacaoReports.map((r) => {
 				const numeroValue = parseInt(r.contratoNumero, 10)
 				const { contratoNumero, ...restOfR } = r
+				const reportType = 'Terceirizacao' as const
 				return {
-					type: 'Terceirização' as const,
+					type: reportType,
 					user: r.fiscalDoContrato.user,
 					contratoNumero: Number.isNaN(numeroValue) ? 0 : numeroValue,
-					contratado: r.contratada || 'Não informado',
+					contratado: r.contratada || 'Nao informado',
 					filePath: `/api/reports/${r.protocolo}.pdf`,
+					overdueInfo: getOverdueInfo(reportType, r.periodoAnalisadoFim),
 					...restOfR,
 				}
 			}),
 			...fiscalPrincipalReports.map((r) => {
 				const numeroValue = parseInt(r.contratoNumero, 10)
 				const { contratoNumero, ...restOfR } = r
+				const reportType = 'Fiscal Tecnico' as const
 				return {
-					type: 'Fiscal Tecnico' as const,
+					type: reportType,
 					user: r.fiscalDoContrato.user,
 					contratoNumero: Number.isNaN(numeroValue) ? 0 : numeroValue,
-					contratado: r.contratada || 'Não informado',
+					contratado: r.contratada || 'Nao informado',
 					filePath: `/api/reports/${r.protocolo}.pdf`,
+					overdueInfo: getOverdueInfo(reportType, r.periodoAnalisadoFim),
 					...restOfR,
 				}
 			}),
