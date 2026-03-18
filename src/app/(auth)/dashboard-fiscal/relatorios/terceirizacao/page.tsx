@@ -1,12 +1,14 @@
 import { getAuth } from '@/lib/auth-actions'
 import { getContratoDetails } from '../_data-access/get-contrato-details'
 import { getActiveFormConfig } from '../_data-access/get-form-config'
+import { getTerceirizacaoReportById } from '../_data-access/get-drafts'
 import { FiscalPrincipalReportForm } from '../fiscal-principal/_components/fiscal-principal-report-form'
 import { TerceirizacaoReportForm } from './_components/terceirizacao-report-form'
 
 interface TerceirizacaoReportPageProps {
 	searchParams: Promise<{
 		contratoId?: string
+		draftId?: string
 	}>
 }
 
@@ -15,15 +17,20 @@ export default async function TerceirizacaoReportPage({
 }: TerceirizacaoReportPageProps) {
 	const params = await searchParams
 	const contratoId = params.contratoId
+	const draftId = params.draftId
 
-	const [initialContrato, formConfigResult, principalConfigResult] = await Promise.all([
-		contratoId ? getContratoDetails(contratoId) : null,
-		getActiveFormConfig('TERCEIRIZACAO'),
-		getActiveFormConfig('FISCAL_PRINCIPAL'),
-	])
+	const [initialContrato, formConfigResult, principalConfigResult, draftReport] =
+		await Promise.all([
+			contratoId ? getContratoDetails(contratoId) : null,
+			getActiveFormConfig('TERCEIRIZACAO'),
+			getActiveFormConfig('FISCAL_PRINCIPAL'),
+			draftId ? getTerceirizacaoReportById(draftId) : null,
+		])
 
 	const formConfig = formConfigResult.success ? formConfigResult.data : []
-	const principalConfig = principalConfigResult.success ? principalConfigResult.data : []
+	const principalConfig = principalConfigResult.success
+		? principalConfigResult.data
+		: []
 
 	// Verifica se é o fiscal principal ESPECÍFICO deste contrato
 	const isPrincipalDoContrato = initialContrato?.isPrincipalDoContrato === true
@@ -62,6 +69,7 @@ export default async function TerceirizacaoReportPage({
 			<TerceirizacaoReportForm
 				initialContrato={initialContrato}
 				formConfig={formConfig}
+				draftReport={draftReport}
 			/>
 		</div>
 	)

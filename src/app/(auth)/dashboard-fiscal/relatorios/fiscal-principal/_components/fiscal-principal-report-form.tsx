@@ -1,6 +1,6 @@
 'use client'
 
-import { Loader2, Plus, PlusCircle, Trash2 } from 'lucide-react'
+import { Loader2, Plus, PlusCircle, Save, Trash2, AlertTriangle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState, useTransition } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
@@ -20,7 +20,6 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Combobox } from '@/components/ui/combobox'
-import { handleFormValidationError } from '../../_utils/form-error-handler'
 import {
 	Form,
 	FormControl,
@@ -33,7 +32,9 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { DynamicFormRenderer } from '../../_components/dynamic-form-renderer'
 import { getLotacoes } from '../../_data-access/get-locacoes'
+import { CertidoesButton } from '@/components/shared/certidoes-button'
 import { createFiscalPrincipalReport } from '../_actions/create-fiscal-principal-report'
+import { saveFiscalPrincipalDraft } from '../_actions/save-fiscal-principal-draft'
 import { getSetorialDataForContract } from '../_data-access/get-setorial-data'
 import {
 	type FiscalPrincipalReportFormValues,
@@ -46,10 +47,15 @@ interface Props {
 	formConfig: FormConfig[]
 }
 
+const CONFIRMATION_TEXT = 'Estou ciente'
+
 export function FiscalPrincipalReportForm({ contratoId, formConfig }: Props) {
 	const [isPending, startTransition] = useTransition()
 	const [isDialogOpen, setIsDialogOpen] = useState(false)
+	const [confirmationInput, setConfirmationInput] = useState('')
 	const router = useRouter()
+
+	const isConfirmationValid = confirmationInput.trim().toLowerCase() === CONFIRMATION_TEXT.toLowerCase()
 	const [lotacoes, setLotacoes] = useState<{ label: string; value: string }[]>(
 		[],
 	)
@@ -131,6 +137,18 @@ export function FiscalPrincipalReportForm({ contratoId, formConfig }: Props) {
 		})
 	}
 
+	const onSaveDraft = (values: FiscalPrincipalReportFormValues) => {
+		startTransition(async () => {
+			const result = await saveFiscalPrincipalDraft(values)
+			if (result.error) {
+				toast.error(result.error)
+			} else {
+				toast.success('Rascunho salvo com sucesso!')
+				router.push('/dashboard-fiscal/rascunhos')
+			}
+		})
+	}
+
 	const handleOpenDialog = () => {
 		form.handleSubmit(() => {
 			setIsDialogOpen(true)
@@ -145,7 +163,7 @@ export function FiscalPrincipalReportForm({ contratoId, formConfig }: Props) {
 			>
 				{/* SEÇÃO 1 - IDENTIFICAÇÃO DO CONTRATO */}
 				<div className="space-y-6">
-					<div className="flex items-center gap-4">
+					<div className="flex items-center gap-4 px-2">
 						<h3 className="text-sm font-black uppercase tracking-[0.2em] text-foreground/40 whitespace-nowrap">
 							1 - IDENTIFICAÇÃO DO CONTRATO
 						</h3>
@@ -610,8 +628,29 @@ export function FiscalPrincipalReportForm({ contratoId, formConfig }: Props) {
 					lotacoes={lotacoes}
 				/>
 
-				<div className="fixed bottom-6 right-6 z-50">
-					<AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+				<div className="fixed bottom-6 right-6 z-50 flex gap-3">
+				<CertidoesButton />
+				<Button
+					type="button"
+					variant="outline"
+					onClick={() => {
+						form.handleSubmit(onSaveDraft)()
+					}}
+					size="lg"
+					className="font-bold gap-2 shadow-lg"
+					disabled={isPending}
+				>
+					{isPending ? (
+						<Loader2 className="animate-spin h-4 w-4" />
+					) : (
+						<Save className="h-4 w-4" />
+					)}
+					Salvar Rascunho
+				</Button>
+				<AlertDialog open={isDialogOpen} onOpenChange={(open) => {
+					setIsDialogOpen(open)
+					if (!open) setConfirmationInput('')
+				}}>
 						<AlertDialogTrigger asChild>
 							<Button
 								type="button"
@@ -629,29 +668,54 @@ export function FiscalPrincipalReportForm({ contratoId, formConfig }: Props) {
 						</AlertDialogTrigger>
 						<AlertDialogContent>
 							<AlertDialogHeader>
-								<AlertDialogTitle>Enviar Relatório?</AlertDialogTitle>
-								<AlertDialogDescription>
-									Certifique-se de que todas as informações estão corretas. O
-									documento não poderá ser editado após o envio.
+								<div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-100">
+									<AlertTriangle className="h-7 w-7 text-amber-600" />
+								</div>
+								<AlertDialogTitle className="text-center">
+									Confirmação de Finalização
+								</AlertDialogTitle>
+								<AlertDialogDescription className="text-center">
+									<span className="block mb-4">
+										Ao finalizar este relatório, o documento será{' '}
+										<strong>assinado digitalmente</strong> e não poderá mais ser{' '}
+										<strong>editado ou excluído</strong>.
+									</span>
+									<span className="block text-foreground font-medium">
+										Esta ação é irreversível. Certifique-se de que todas as informações estão corretas antes de continuar.
+									</span>
 								</AlertDialogDescription>
 							</AlertDialogHeader>
+							
+							<div className="space-y-3 py-4">
+								<label htmlFor="confirmation-input-fp" className="text-sm font-medium">
+									Digite <span className="font-bold text-primary">"{CONFIRMATION_TEXT}"</span> para confirmar:
+								</label>
+								<Input
+									id="confirmation-input-fp"
+									value={confirmationInput}
+									onChange={(e) => setConfirmationInput(e.target.value)}
+									placeholder={CONFIRMATION_TEXT}
+									className="text-center"
+									autoComplete="off"
+								/>
+							</div>
+
 							<AlertDialogFooter>
-								<AlertDialogCancel>Voltar</AlertDialogCancel>
+								<AlertDialogCancel onClick={() => setConfirmationInput('')}>
+									Cancelar
+								</AlertDialogCancel>
 								<AlertDialogAction
-									disabled={isPending}
+									disabled={isPending || !isConfirmationValid}
+									className="bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
 									onClick={(e) => {
 										e.preventDefault()
-										form.handleSubmit(
-											onSubmit,
-											(errors) => {
-												handleFormValidationError(errors, form, () => {
-													setIsDialogOpen(false)
-												})
-											},
-										)()
+										form.handleSubmit(onSubmit, () => {
+											setIsDialogOpen(false)
+											setConfirmationInput('')
+										})()
 									}}
 								>
-									{isPending ? 'Enviando...' : 'Confirmar e Enviar'}
+									{isPending ? 'Enviando...' : 'Confirmar e Finalizar'}
 								</AlertDialogAction>
 							</AlertDialogFooter>
 						</AlertDialogContent>

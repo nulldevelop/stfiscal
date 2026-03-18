@@ -36,8 +36,8 @@ type ReportData = Omit<
 > & {
 	user: { name?: string | null }
 	type: string
-	dataInicio: Date
-	dataFim: Date
+	dataInicio?: Date | null
+	dataFim?: Date | null
 	secretariaNome: string
 	brasaoBase64: string
 	qrCodeUrl: string
@@ -185,7 +185,7 @@ const FiscalPrincipalLayout = ({ report }: { report: ReportData }) => {
 			<DetailItem
 				label="Vigência do Contrato"
 				value={
-					report.dataInicio
+					report.dataInicio && report.dataFim
 						? `${formatData(report.dataInicio)} a ${formatData(report.dataFim)}`
 						: null
 				}
@@ -372,7 +372,7 @@ export function FiscalPrincipalReportPdf({ report, siteUrl }: ReportPdfProps) {
 					<Image src={report.brasaoBase64} style={styles.brasao} />
 					<View style={styles.headerTextContainer}>
 						<Text style={styles.headerTitle}>
-							{report.organizationName} - ST - Fiscalização e Relatórios
+							{report.organizationName} - SIRA
 						</Text>
 						<Text style={styles.headerSubtitle}>
 							{report.secretariaNome?.toLowerCase().startsWith('secretaria')
@@ -464,7 +464,7 @@ export function FiscalPrincipalReportPdf({ report, siteUrl }: ReportPdfProps) {
 				<Text
 					fixed
 					render={({ pageNumber, totalPages }) =>
-						`Página ${pageNumber} de ${totalPages} | Assinado por: ${report.user?.name} | ST - Fiscalização e Relatórios`
+						`Página ${pageNumber} de ${totalPages} | Assinado por: ${report.user?.name} | SIRA`
 					}
 					style={styles.footer}
 				/>

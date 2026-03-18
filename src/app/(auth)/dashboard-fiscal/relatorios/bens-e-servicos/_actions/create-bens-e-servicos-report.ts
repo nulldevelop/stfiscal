@@ -147,7 +147,7 @@ export const createBensEServicosReport = withPermission(
 			data: {
 				// Campos obrigatórios no Prisma que podem vir undefined do Zod Schema dinâmico
 				secretariaNome: baseData.secretariaNome,
-				licitacaoModalidadeNumero: String(contract.displayContrato),
+				licitacaoModalidadeNumero: String(contract.displayLicitacao),
 				contratoNumero: String(contract.displayContrato),
 				periodoAnalisadoInicio: new Date(baseData.periodoAnalisadoInicio),
 				periodoAnalisadoFim: new Date(baseData.periodoAnalisadoFim),
@@ -234,12 +234,7 @@ export const createBensEServicosReport = withPermission(
 			select: { name: true, cidade: true, logo: true },
 		})
 
-		const brasaoPath = path.join(
-			process.cwd(),
-			'public',
-			'images',
-			'Brasao.png',
-		)
+		const brasaoPath = path.join(process.cwd(), 'public', 'imgs', 'Brasao.png')
 		let brasaoBase64 = ''
 		try {
 			const brasaoBuffer = fs.readFileSync(brasaoPath)
@@ -256,12 +251,12 @@ export const createBensEServicosReport = withPermission(
 			dataInicio: contract.dataInicio,
 			dataFim: contract.dataFim,
 			configs, // Reutiliza a variável configs declarada acima
-			organizationName: organization?.name ?? 'Organização',
+			organizationName: organization?.name ?? 'Prefeitura Municipal',
 			organizationCidade: organization?.cidade ?? null,
 		}
 
 		//! 11. Gerar QR Code
-		const siteUrl = `${process.env.LINK_URL}`
+		const siteUrl = process.env.LINK_URL ?? ''
 		const verificationUrl = `${siteUrl}/verify-report/${updatedReport.assinaturaDigital}`
 		const qrCodeUrl = await qrcode.toDataURL(verificationUrl)
 
@@ -295,7 +290,7 @@ export const createBensEServicosReport = withPermission(
 
 		//! 13. Salvar arquivo PDF
 		const reportsDir =
-			process.env.REPORTS_DIR || path.join(process.cwd(), 'public', 'reports')
+			process.env.REPORTS_DIR || path.join(process.cwd(), 'storage', 'reports')
 		if (!fs.existsSync(reportsDir)) {
 			fs.mkdirSync(reportsDir, { recursive: true })
 		}

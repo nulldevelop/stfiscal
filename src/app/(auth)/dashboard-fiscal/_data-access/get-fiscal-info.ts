@@ -46,8 +46,9 @@ export async function getFiscalInfo(): Promise<FiscalInfo | null> {
 		!fiscalContrato.matricula ||
 		fiscalContrato.matricula.trim() === '' ||
 		!fiscalContrato.contato ||
-		fiscalContrato.contato.trim() === ''
-	!fiscalContrato.portaria || fiscalContrato.portaria.trim() === ''
+		fiscalContrato.contato.trim() === '' ||
+		!fiscalContrato.portaria ||
+		fiscalContrato.portaria.trim() === ''
 
 	return {
 		id: fiscalContrato.id,

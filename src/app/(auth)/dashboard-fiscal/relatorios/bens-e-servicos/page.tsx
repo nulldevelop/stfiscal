@@ -1,12 +1,14 @@
 import { getAuth } from '@/lib/auth-actions'
 import { getContratoDetails } from '../_data-access/get-contrato-details'
 import { getActiveFormConfig } from '../_data-access/get-form-config'
+import { getBensEServicosReportById } from '../_data-access/get-drafts'
 import { FiscalPrincipalReportForm } from '../fiscal-principal/_components/fiscal-principal-report-form'
 import { BensEServicosReportForm } from './_components/bens-e-servicos-report-form'
 
 interface BensEServicosReportPageProps {
 	searchParams: Promise<{
 		contratoId?: string
+		draftId?: string
 	}>
 }
 
@@ -15,12 +17,15 @@ export default async function BensEServicosReportPage({
 }: BensEServicosReportPageProps) {
 	const params = await searchParams
 	const contratoId = params.contratoId
+	const draftId = params.draftId
 
-	const [initialContrato, formConfigResult, principalConfigResult] = await Promise.all([
-		contratoId ? getContratoDetails(contratoId) : null,
-		getActiveFormConfig('BENS_SERVICOS'),
-		getActiveFormConfig('FISCAL_PRINCIPAL'),
-	])
+	const [initialContrato, formConfigResult, principalConfigResult, draftReport] =
+		await Promise.all([
+			contratoId ? getContratoDetails(contratoId) : null,
+			getActiveFormConfig('BENS_SERVICOS'),
+			getActiveFormConfig('FISCAL_PRINCIPAL'),
+			draftId ? getBensEServicosReportById(draftId) : null,
+		])
 
 	const formConfig = formConfigResult.success ? formConfigResult.data : []
 	const principalConfig = principalConfigResult.success ? principalConfigResult.data : []
@@ -30,8 +35,8 @@ export default async function BensEServicosReportPage({
 
 	if (isPrincipalDoContrato && contratoId) {
 		return (
-			<div className="container space-y-3">
-				<div className="space-y-2">
+			<div className="container mx-auto space-y-6">
+				<div className="mx-2 space-y-2">
 					<h1 className="font-semibold text-2xl text-foreground">
 						Relatório de Fiscalização – Fiscal Tecnico
 					</h1>
@@ -63,6 +68,7 @@ export default async function BensEServicosReportPage({
 			<BensEServicosReportForm
 				initialContrato={initialContrato}
 				formConfig={formConfig}
+				draftReport={draftReport}
 			/>
 		</div>
 	)

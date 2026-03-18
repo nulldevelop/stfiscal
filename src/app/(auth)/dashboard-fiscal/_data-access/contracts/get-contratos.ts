@@ -1,11 +1,9 @@
 'use server'
 
 import { endOfMonth, startOfMonth } from 'date-fns'
-import type { Prisma } from '@/generated/prisma/client'
 import { getCurrentOrganizationId, getCurrentUserId } from '@/lib/auth-actions'
 import { prisma } from '@/lib/prisma'
 
-// Interface simplificada para o que o Dashboard realmente precisa exibir
 export type ContratoDashboard = {
 	id: string
 	numero: number
@@ -143,13 +141,13 @@ export async function getDashboardDataByFiscal(): Promise<DashboardData> {
 				fiscalContratoId: contrato.fiscalContratoId,
 				licitacaoId: contrato.licitacaoId,
 				licitacao: {
-					objeto: contrato.licitacao.objeto || '',
-					numero: contrato.licitacao.numero,
-					ano: contrato.licitacao.ano,
-					modalidade: contrato.licitacao.modalidade,
+					objeto: contrato.licitacao?.objeto || '',
+					numero: contrato.licitacao?.numero ?? 0,
+					ano: contrato.licitacao?.ano ?? new Date().getFullYear(),
+					modalidade: contrato.licitacao?.modalidade || '',
 				},
 				empresa: {
-					name: contrato.empresa.name,
+					name: contrato.empresa?.name || '',
 				},
 				bensEServicosReports: lastReport
 					? [{ createdAt: lastReport.createdAt }]
@@ -213,6 +211,7 @@ export async function getContratoDetails(contratoId: string) {
 			licitacao: true,
 			empresa: true,
 			bensEServicosReports: {
+				where: { status: 'FINALIZADO' },
 				orderBy: { createdAt: 'desc' },
 				include: {
 					fiscalDoContrato: {
@@ -236,6 +235,7 @@ export async function getContratoDetails(contratoId: string) {
 				orderBy: { createdAt: 'desc' },
 			},
 			fiscalPrincipalReports: {
+				where: { status: 'FINALIZADO' },
 				orderBy: { createdAt: 'desc' },
 				include: {
 					fiscalDoContrato: {
@@ -272,7 +272,7 @@ export async function getContratoDetails(contratoId: string) {
 	const [transporteReports, obrasReports, terceirizacaoReports] =
 		await Promise.all([
 			prisma.transporteReport.findMany({
-				where: { contratoId: contrato.id },
+				where: { contratoId: contrato.id, status: 'FINALIZADO' },
 				orderBy: { createdAt: 'desc' },
 				include: {
 					fiscalDoContrato: {
@@ -281,7 +281,7 @@ export async function getContratoDetails(contratoId: string) {
 				},
 			}),
 			prisma.obrasReport.findMany({
-				where: { contratoId: contrato.id },
+				where: { contratoId: contrato.id, status: 'FINALIZADO' },
 				orderBy: { createdAt: 'desc' },
 				include: {
 					fiscalDoContrato: {
@@ -290,7 +290,7 @@ export async function getContratoDetails(contratoId: string) {
 				},
 			}),
 			prisma.terceirizacaoReport.findMany({
-				where: { contratoId: contrato.id },
+				where: { contratoId: contrato.id, status: 'FINALIZADO' },
 				orderBy: { createdAt: 'desc' },
 				include: {
 					fiscalDoContrato: {

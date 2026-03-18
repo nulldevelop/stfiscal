@@ -11,4 +11,5 @@ export type ContratoDetails = {
 export interface BensEServicosReportFormProps {
 	initialContrato: ContratoDetails
 	formConfig: any[]
+	draftReport?: any
 }

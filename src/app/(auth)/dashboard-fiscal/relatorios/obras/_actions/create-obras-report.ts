@@ -8,11 +8,12 @@ import React from 'react'
 import type { z } from 'zod'
 import { Prisma } from '@/generated/prisma/client'
 import { getCurrentOrganizationId, getSession } from '@/lib/auth-actions'
-import { withPermission } from '@/lib/permissions/with-permission'
 import { prisma } from '@/lib/prisma'
 import { simpleHash } from '@/utils/hash'
 import { ReportPdf } from '../_components/report-pdf'
 import { formSchemaObras } from './action-schema'
+
+import { withPermission } from '@/lib/permissions/with-permission'
 
 export const createObrasReport = withPermission(
 	'create',
@@ -200,8 +201,7 @@ export const createObrasReport = withPermission(
 					(values as any).contratadaEncaminhaDocumentacaoSubcontratada ||
 					'Não se aplica',
 				houveAditivo: (values as any).houveAditivo || 'Não',
-				garantiaContratual:
-					(values as any).garantiaContratual || 'Não Previsto',
+				garantiaContratual: (values as any).garantiaContratual || 'Não Previsto',
 
 				// Restante dos campos (observações, etc)
 				manutencaoHabitacaoFiscalTrabalhistaObs: (values as any)
@@ -210,11 +210,9 @@ export const createObrasReport = withPermission(
 				controlePrazoExecucaoObs: (values as any).controlePrazoExecucaoObs,
 				controleQualidadeMateriaisObs: (values as any)
 					.controleQualidadeMateriaisObs,
-				controleQualidadeProjetoObs: (values as any)
-					.controleQualidadeProjetoObs,
+				controleQualidadeProjetoObs: (values as any).controleQualidadeProjetoObs,
 				controlePrevistoPercentual: (values as any).controlePrevistoPercentual,
-				controleExecutadoPercentual: (values as any)
-					.controleExecutadoPercentual,
+				controleExecutadoPercentual: (values as any).controleExecutadoPercentual,
 				controleControleQuantidadeObs: (values as any)
 					.controleControleQuantidadeObs,
 				comprimentoObrigacoesContratoObs: (values as any)
@@ -410,12 +408,7 @@ export const createObrasReport = withPermission(
 		}
 
 		// 11. Carregar brasão
-		const brasaoPath = path.join(
-			process.cwd(),
-			'public',
-			'images',
-			'Brasao.png',
-		)
+		const brasaoPath = path.join(process.cwd(), 'public', 'imgs', 'Brasao.png')
 		let brasaoBase64 = ''
 		try {
 			const brasaoBuffer = fs.readFileSync(brasaoPath)
@@ -436,7 +429,7 @@ export const createObrasReport = withPermission(
 		}
 
 		// 13. Gerar QR Code
-		const siteUrl = `${process.env.LINK_URL}`
+		const siteUrl = process.env.LINK_URL ?? ''
 		const verificationUrl = `${siteUrl}/verify-report/${updatedReport.assinaturaDigital}`
 		const qrCodeUrl = await qrcode.toDataURL(verificationUrl)
 
@@ -445,7 +438,7 @@ export const createObrasReport = withPermission(
 			qrCodeUrl,
 			protocolo: newProtocol,
 			brasaoBase64,
-			organizationName: organization?.name ?? 'Organização',
+			organizationName: organization?.name ?? 'Prefeitura Municipal',
 			tabelaAtrasos: tabelaAtrasos || [],
 			tabelaServicos: tabelaServicos || [],
 			tabelaMediacoes: tabelaMediacoes || [],
@@ -475,7 +468,7 @@ export const createObrasReport = withPermission(
 
 		// 15. Salvar arquivo PDF
 		const reportsDir =
-			process.env.REPORTS_DIR || path.join(process.cwd(), 'public', 'reports')
+			process.env.REPORTS_DIR || path.join(process.cwd(), 'storage', 'reports')
 		if (!fs.existsSync(reportsDir)) {
 			fs.mkdirSync(reportsDir, { recursive: true })
 		}
