@@ -1,6 +1,6 @@
 'use client'
 
-import { ChevronRight, Moon, Sun } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -33,15 +33,13 @@ import {
 	sectionsByRole,
 } from '@/utils/sidebar-config'
 import pkg from '../../../package.json'
-import { useAuthTheme } from './auth-theme-provider'
 import { NavUser } from './nav-user'
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export function AppSidebar({ user, org }: AppSidebarProps) {
 	const pathname = usePathname()
-	const { theme, setTheme } = useAuthTheme()
-	const [mounted, setMounted] = useState(false)
+	const [_mounted, setMounted] = useState(false)
 	const userRole = (user.role || 'USER') as Role
 	const sections = sectionsByRole[userRole] ?? []
 
@@ -145,25 +143,10 @@ export function AppSidebar({ user, org }: AppSidebarProps) {
 			</SidebarContent>
 
 			<SidebarFooter>
-				<SidebarMenu>
-					<SidebarMenuItem>
-						<SidebarMenuButton
-							onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-							tooltip={
-								mounted && theme === 'dark' ? 'Modo claro' : 'Modo escuro'
-							}
-						>
-							{mounted && theme === 'dark' ? <Sun /> : <Moon />}
-							<span>
-								{mounted && theme === 'dark' ? 'Modo claro' : 'Modo escuro'}
-							</span>
-						</SidebarMenuButton>
-					</SidebarMenuItem>
-				</SidebarMenu>
 				<p className="px-2 pb-1 text-center text-[10px] text-muted-foreground/50">
 					v{pkg.version}
 				</p>
-			<NavUser user={user} />
+				<NavUser user={user} />
 			</SidebarFooter>
 			<SidebarRail />
 		</Sidebar>

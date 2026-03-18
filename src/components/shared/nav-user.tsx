@@ -1,6 +1,12 @@
 'use client'
 
-import { IconLogout, IconSelector, IconSun, IconMoon, IconDeviceDesktop } from '@tabler/icons-react'
+import {
+	IconDeviceDesktop,
+	IconLogout,
+	IconMoon,
+	IconSelector,
+	IconSun,
+} from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
 import { useTheme } from 'next-themes'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -9,12 +15,12 @@ import {
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuLabel,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
-	DropdownMenuSub,
-	DropdownMenuSubTrigger,
 	DropdownMenuPortal,
+	DropdownMenuSeparator,
+	DropdownMenuSub,
 	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
+	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import {
 	SidebarMenu,
@@ -110,15 +116,24 @@ export function NavUser({ user }: NavUserProps) {
 							</DropdownMenuSubTrigger>
 							<DropdownMenuPortal>
 								<DropdownMenuSubContent>
-									<DropdownMenuItem onClick={() => setTheme('light')} className="gap-2">
+									<DropdownMenuItem
+										onClick={() => setTheme('light')}
+										className="gap-2"
+									>
 										<IconSun className="size-4" />
 										<span>Claro</span>
 									</DropdownMenuItem>
-									<DropdownMenuItem onClick={() => setTheme('dark')} className="gap-2">
+									<DropdownMenuItem
+										onClick={() => setTheme('dark')}
+										className="gap-2"
+									>
 										<IconMoon className="size-4" />
 										<span>Escuro</span>
 									</DropdownMenuItem>
-									<DropdownMenuItem onClick={() => setTheme('system')} className="gap-2">
+									<DropdownMenuItem
+										onClick={() => setTheme('system')}
+										className="gap-2"
+									>
 										<IconDeviceDesktop className="size-4" />
 										<span>Sistema</span>
 									</DropdownMenuItem>
@@ -126,7 +141,10 @@ export function NavUser({ user }: NavUserProps) {
 							</DropdownMenuPortal>
 						</DropdownMenuSub>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem onClick={handleSignOut} className="gap-2 text-destructive focus:text-destructive">
+						<DropdownMenuItem
+							onClick={handleSignOut}
+							className="gap-2 text-destructive focus:text-destructive"
+						>
 							<IconLogout className="size-4" />
 							<span>Sair</span>
 						</DropdownMenuItem>
