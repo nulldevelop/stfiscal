@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono, Poppins } from 'next/font/google'
 import '@/styles/globals.css'
+import { Analytics } from '@vercel/analytics/next'
 import { Toaster } from 'sonner'
 import { Providers } from '@/components/shared/providers'
 import { ThemeProvider } from '@/components/shared/theme-provider'
@@ -48,6 +49,7 @@ export default function RootLayout({
 				<ThemeProvider>
 					<Providers>
 						{children}
+						<Analytics />
 						<Toaster
 							duration={2000}
 							position="top-right"
