@@ -18,6 +18,10 @@ const ROLE_DEFAULT_PERMISSIONS: Partial<
 			moduleKey: 'fiscal-notificacoes',
 			actions: ['read', 'create', 'update', 'delete'],
 		},
+		{
+			moduleKey: 'mensagens-internas',
+			actions: ['read', 'create', 'update'],
+		},
 	],
 	FISCAL_PRINCIPAL: [
 		{ moduleKey: 'DadosFiscais', actions: ['read', 'update'] },
@@ -28,6 +32,10 @@ const ROLE_DEFAULT_PERMISSIONS: Partial<
 		{
 			moduleKey: 'fiscal-notificacoes',
 			actions: ['read', 'create', 'update', 'delete'],
+		},
+		{
+			moduleKey: 'mensagens-internas',
+			actions: ['read', 'create', 'update'],
 		},
 	],
 	GESTOR_CONTRATOS: [
@@ -49,6 +57,10 @@ const ROLE_DEFAULT_PERMISSIONS: Partial<
 		},
 		{
 			moduleKey: 'gestor-notificacoes',
+			actions: ['read', 'create', 'update', 'delete'],
+		},
+		{
+			moduleKey: 'mensagens-internas',
 			actions: ['read', 'create', 'update', 'delete'],
 		},
 	],
