@@ -24,6 +24,9 @@ const poppins = Poppins({
 export const metadata: Metadata = {
 	title: 'ST - Fiscalização e Relatórios',
 	description: 'ST - Fiscalização e Relatórios',
+	metadataBase: new URL(
+		process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+	),
 	openGraph: {
 		images: '/images/logo.svg',
 	},
