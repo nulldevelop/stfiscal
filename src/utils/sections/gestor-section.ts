@@ -15,6 +15,17 @@ export const gestorSections: NavSection[] = [
 		items: [
 			{ title: 'Início', url: '/dashboard-gestor', icon: IconHome },
 			{
+				title: 'Mensagens Internas',
+				url: '/dashboard-gestor/mensagens',
+				icon: MessageSquare,
+				badgeKey: 'mensagens',
+			},
+		],
+	},
+	{
+		label: 'Gestão de Contrato',
+		items: [
+			{
 				title: 'Contratos',
 				url: '/dashboard-gestor/contratos',
 				icon: IconFileCertificate,
@@ -53,12 +64,6 @@ export const gestorSections: NavSection[] = [
 				title: 'Notificações',
 				url: '/dashboard-gestor/notificacoes',
 				icon: Bell,
-			},
-			{
-				title: 'Mensagens Internas',
-				url: '/dashboard-gestor/mensagens',
-				icon: MessageSquare,
-				badgeKey: 'mensagens',
 			},
 		],
 	},
