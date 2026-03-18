@@ -1,19 +1,28 @@
 import {
 	IconAlertTriangle,
+	IconBell,
 	IconClockExclamation,
 	IconFileText,
 	IconHistory,
 	IconHome,
 	IconPackage,
 	IconTruck,
-	IconBell,
 } from '@tabler/icons-react'
+import { MessageSquare } from 'lucide-react'
 import type { NavSection } from '@/utils/sidebar-config'
 
 export const fiscalPrincipalSections: NavSection[] = [
 	{
 		label: 'Menu Principal',
-		items: [{ title: 'Início', url: '/dashboard-fiscal', icon: IconHome }],
+		items: [
+			{ title: 'Início', url: '/dashboard-fiscal', icon: IconHome },
+			{
+				title: 'Mensagens',
+				url: '/dashboard-fiscal/mensagens',
+				icon: MessageSquare,
+				badgeKey: 'mensagens',
+			},
+		],
 	},
 	{
 		label: 'Relatórios',
@@ -58,6 +67,11 @@ export const fiscalPrincipalSections: NavSection[] = [
 	{
 		label: 'Histórico',
 		items: [
+			{
+				title: 'Rascunhos de Relatórios',
+				url: '/dashboard-fiscal/rascunhos',
+				icon: IconHistory,
+			},
 			{
 				title: 'Histórico de Relatórios',
 				url: '/dashboard-fiscal/historico-relatorios',

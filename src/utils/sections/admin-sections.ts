@@ -6,7 +6,7 @@ import {
 	IconHome,
 	IconUsers,
 } from '@tabler/icons-react'
-import { Bell } from 'lucide-react'
+import { Bell, MessageSquare } from 'lucide-react'
 import type { NavSection } from '@/utils/sidebar-config'
 
 export const adminSections: NavSection[] = [
@@ -15,9 +15,25 @@ export const adminSections: NavSection[] = [
 		items: [
 			{ title: 'Início', url: '/dashboard-gestor', icon: IconHome },
 			{
+				title: 'Mensagens',
+				url: '/dashboard-gestor/mensagens',
+				icon: MessageSquare,
+				badgeKey: 'mensagens',
+			},
+		],
+	},
+	{
+		label: 'Gestão de Contrato',
+		items: [
+			{
 				title: 'Contratos',
 				url: '/dashboard-gestor/contratos',
 				icon: IconFileCertificate,
+			},
+			{
+				title: 'Aditivos',
+				url: '/dashboard-gestor/aditivos',
+				icon: IconFileReport,
 			},
 			{
 				title: 'Empresas',
@@ -40,12 +56,12 @@ export const adminSections: NavSection[] = [
 		label: 'Fiscalização',
 		items: [
 			{
-				title: 'Relatórios',
+				title: 'Histórico de Relatórios',
 				url: '/dashboard-gestor/relatorios',
 				icon: IconFileReport,
 			},
 			{
-				title: 'Notificações',
+				title: 'Histórico de Notificações',
 				url: '/dashboard-gestor/notificacoes',
 				icon: Bell,
 			},

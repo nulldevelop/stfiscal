@@ -18,6 +18,8 @@ export type NavItem = {
 	url?: string
 	icon: React.ComponentType<{ className?: string }>
 	items?: { title: string; url: string }[]
+	/** Chave usada para injetar badge dinamicamente (ex: 'mensagens') */
+	badgeKey?: string
 }
 
 export type NavSection = {
@@ -44,6 +46,8 @@ export type AppSidebarProps = {
 	} | null
 	teams?: Team[]
 	activeTeamId?: string | null
+	/** Mapa de badgeKey → contagem para exibir badges dinâmicos nos itens */
+	badges?: Record<string, number>
 }
 
 export const sectionsByRole: Record<Role, NavSection[]> = {
