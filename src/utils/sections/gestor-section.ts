@@ -15,7 +15,7 @@ export const gestorSections: NavSection[] = [
 		items: [
 			{ title: 'Início', url: '/dashboard-gestor', icon: IconHome },
 			{
-				title: 'Mensagens Internas',
+				title: 'Mensagens',
 				url: '/dashboard-gestor/mensagens',
 				icon: MessageSquare,
 				badgeKey: 'mensagens',

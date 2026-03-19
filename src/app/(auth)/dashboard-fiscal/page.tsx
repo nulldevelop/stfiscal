@@ -1,5 +1,12 @@
-import { FileStack } from 'lucide-react'
+import {
+	AlertCircle,
+	AlertTriangle,
+	CheckCircle,
+	FileStack,
+} from 'lucide-react'
 import { redirect } from 'next/navigation'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
 import { getAuth } from '@/lib/auth-actions'
 import { CompleteFiscalDataModal } from './_components/complete-fiscal-data-modal'
 import { Metrics } from './_components/metrics'
@@ -18,9 +25,17 @@ export default async function DashboardFiscalPage() {
 		getFiscalInfo(),
 	])
 
-	const { contratos, totalContratos, totalRelatoriosMes } = dashboardData
+	const {
+		contratos,
+		totalContratos,
+		totalRelatoriosMes,
+		relatoriosFeitos,
+		relatoriosPendentes,
+	} = dashboardData
 
-	const hasPendingReports = contratos.some((contrato) => {
+	const hasPendingReports = relatoriosPendentes > 0
+
+	const contratosPendentes = contratos.filter((contrato) => {
 		const lastReport = contrato.bensEServicosReports[0]
 		if (!lastReport) return true
 		const daysSinceLastReport = Math.floor(
@@ -30,6 +45,16 @@ export default async function DashboardFiscalPage() {
 		return daysSinceLastReport > 30
 	})
 
+	const contratosEmDia = contratos.filter((contrato) => {
+		const lastReport = contrato.bensEServicosReports[0]
+		if (!lastReport) return false
+		const daysSinceLastReport = Math.floor(
+			(Date.now() - new Date(lastReport.createdAt).getTime()) /
+				(1000 * 60 * 60 * 24),
+		)
+		return daysSinceLastReport <= 30
+	})
+
 	return (
 		<div className="flex flex-col gap-8 pb-10">
 			{fiscalInfo?.isIncomplete && (
@@ -37,9 +62,17 @@ export default async function DashboardFiscalPage() {
 			)}
 
 			<header className="flex flex-col gap-2 px-4 md:px-0">
-				<h1 className="text-3xl font-bold tracking-tight">
-					Olá, {user.name?.split(' ')[0]}
-				</h1>
+				<div className="flex items-center gap-3 flex-wrap">
+					<h1 className="text-3xl font-bold tracking-tight">
+						Olá, {user.name?.split(' ')[0]}
+					</h1>
+					{hasPendingReports && (
+						<Badge variant="destructive" className="text-xs gap-1.5 py-1 px-3">
+							<AlertCircle className="h-3.5 w-3.5" />
+							Irregular - Relatórios pendentes
+						</Badge>
+					)}
+				</div>
 				<p className="text-muted-foreground">
 					Aqui está um resumo dos seus contratos e atividades de fiscalização.
 				</p>
@@ -48,27 +81,50 @@ export default async function DashboardFiscalPage() {
 			<Metrics
 				totalContratos={totalContratos}
 				totalRelatoriosMes={totalRelatoriosMes}
-				hasPendingReports={hasPendingReports}
+				relatoriosFeitos={relatoriosFeitos}
+				relatoriosPendentes={relatoriosPendentes}
 			/>
 
 			<section className="space-y-4">
-				<div className="flex items-center justify-between px-4 md:px-0">
-					<div className="flex items-center gap-2">
-						<FileStack className="h-5 w-5 text-muted-foreground" />
-						<h2 className="text-xl font-bold tracking-tight">Meus Contratos</h2>
-					</div>
-					<div className="text-[10px] md:text-xs text-muted-foreground px-2 py-1 rounded-md border">
-						{contratos.length} contrato(s)
-					</div>
-				</div>
-
 				{contratos.length > 0 ? (
-					<div>
-						<ContratosTable contratos={contratos as any} />
+					<div className="space-y-6">
+						{contratosPendentes.length > 0 && (
+							<div className="space-y-4">
+								<div className="flex items-center gap-2 px-4 md:px-0">
+									<AlertTriangle className="h-5 w-5 text-orange-600" />
+									<h2 className="text-xl font-bold tracking-tight text-orange-600">
+										Contratos Pendentes
+									</h2>
+									<Badge variant="destructive" className="ml-2">
+										{contratosPendentes.length}
+									</Badge>
+								</div>
+								<ContratosTable contratos={contratosPendentes as any} />
+							</div>
+						)}
+
+						{contratosPendentes.length > 0 && contratosEmDia.length > 0 && (
+							<Separator className="my-6" />
+						)}
+
+						{contratosEmDia.length > 0 && (
+							<div className="space-y-4">
+								<div className="flex items-center gap-2 px-4 md:px-0">
+									<CheckCircle className="h-5 w-5 text-emerald-600" />
+									<h2 className="text-xl font-bold tracking-tight text-emerald-600">
+										Contratos em Dia
+									</h2>
+									<Badge variant="secondary" className="ml-2">
+										{contratosEmDia.length}
+									</Badge>
+								</div>
+								<ContratosTable contratos={contratosEmDia as any} />
+							</div>
+						)}
 					</div>
 				) : (
-					<div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed p-20 text-center /30">
-						<div className="p-4  rounded-full mb-4">
+					<div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed p-20 text-center">
+						<div className="p-4 rounded-full mb-4">
 							<FileStack className="h-8 w-8 text-muted-foreground/50" />
 						</div>
 						<h3 className="font-semibold text-lg">Nenhum contrato ativo</h3>

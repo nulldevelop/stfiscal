@@ -32,6 +32,8 @@ export type DashboardData = {
 	contratos: ContratoDashboard[]
 	totalContratos: number
 	totalRelatoriosMes: number
+	relatoriosFeitos: number
+	relatoriosPendentes: number
 }
 
 export async function getDashboardDataByFiscal(): Promise<DashboardData> {
@@ -68,7 +70,13 @@ export async function getDashboardDataByFiscal(): Promise<DashboardData> {
 	})
 
 	if (fiscalRecords.length === 0) {
-		return { contratos: [], totalContratos: 0, totalRelatoriosMes: 0 }
+		return {
+			contratos: [],
+			totalContratos: 0,
+			totalRelatoriosMes: 0,
+			relatoriosFeitos: 0,
+			relatoriosPendentes: 0,
+		}
 	}
 
 	// Consolidar e deduplicar contratos
@@ -194,7 +202,50 @@ export async function getDashboardDataByFiscal(): Promise<DashboardData> {
 	const totalRelatoriosMes =
 		bensCount + transpCount + obrasCount + terceirizacaoCount
 
-	return { contratos, totalContratos, totalRelatoriosMes }
+	const now = new Date()
+	const relatoriosPendentes = contratos.filter((contrato) => {
+		const lastReport = contrato.bensEServicosReports[0]
+		if (!lastReport) return true
+		const daysSinceLastReport = Math.floor(
+			(now.getTime() - new Date(lastReport.createdAt).getTime()) /
+				(1000 * 60 * 60 * 24),
+		)
+		return daysSinceLastReport > 30
+	}).length
+
+	const relatoriosFeitos = totalContratos - relatoriosPendentes
+
+	const sortedContratos = [...contratos].sort((a, b) => {
+		const lastReportA = a.bensEServicosReports[0]
+		const lastReportB = b.bensEServicosReports[0]
+		const daysA = lastReportA
+			? Math.floor(
+					(now.getTime() - new Date(lastReportA.createdAt).getTime()) /
+						(1000 * 60 * 60 * 24),
+				)
+			: Infinity
+		const daysB = lastReportB
+			? Math.floor(
+					(now.getTime() - new Date(lastReportB.createdAt).getTime()) /
+						(1000 * 60 * 60 * 24),
+				)
+			: Infinity
+
+		const isPendingA = daysA > 30
+		const isPendingB = daysB > 30
+
+		if (isPendingA && !isPendingB) return -1
+		if (!isPendingA && isPendingB) return 1
+		return 0
+	})
+
+	return {
+		contratos: sortedContratos,
+		totalContratos,
+		totalRelatoriosMes,
+		relatoriosFeitos,
+		relatoriosPendentes,
+	}
 }
 
 export async function getContratoDetails(contratoId: string) {
@@ -305,6 +356,6 @@ export async function getContratoDetails(contratoId: string) {
 		transporteReports,
 		obrasReports,
 		terceirizacaoReports,
-		isPrincipalDoContrato, // Nova flag booleana precisa
+		isPrincipalDoContrato, 
 	}
 }
