@@ -4,8 +4,6 @@
 
 [**Repositório**](https://github.com/devpedroA/stfiscal)
 
-![Dashboard do fiscal](../../stfiscal/public/screenshots/dashboard-fiscal.png)
-
 <!-- Capturas de tela reais do repositório (public/screenshots). -->
 
 ## Sobre o projeto
